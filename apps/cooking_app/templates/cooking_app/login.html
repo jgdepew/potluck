@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>potluck/login</title>
+</head>
+<body>
+
+	<div id="title">
+		<h2>potluck</h2>
+		<p>Because shared food is best food</p>
+	</div>
+	<h4>Login</h4>
+	<form action="{% url 'potluck:login_validation' %}" method="post">
+		{% csrf_token %}
+		<p>Email:	<input type="text" name="email"></p>
+		<p>Password:<input type="text" name="password"></p>
+		<input type="submit" name="Login">
+	</form>
+
+	{% if messages %}
+	<ul class="messages">
+	    {% for message in messages %}
+	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	    {% endfor %}
+	</ul>
+	{% endif %}
+
+	<br>
+	<a href="{% url 'potluck:register' %}">not a member? register here for free!</a>
+
+</body>
+</html>

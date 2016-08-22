@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>potluck | register</title>
+</head>
+<body>
+
+	<div id="title">
+		<h2>potluck</h2>
+		<p>Because shared food is best food</p>
+	</div>
+
+	<h4>Register</h4>
+	<form action="{% url 'potluck:register_validation' %}" method="post">
+		{% csrf_token %}
+		<p>First Name: <input type="text" name="first_name"></p>	
+		<p>Last Name: <input type="text" name="last_name"></p>
+		<p>Email:	<input type="text" name="email"></p>
+		<p>Password:<input type="text" name="password1"></p>
+		<p>Confirm Password:<input type="text" name="password2"></p>
+		<input type="submit" name="Register">
+	</form>
+
+	{% if messages %}
+	<ul class="messages">
+	    {% for message in messages %}
+	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	    {% endfor %}
+	</ul>
+	{% endif %}
+
+	<br>
+	<a href="{% url 'potluck:login' %}">already have an account? login here!</a>
+
+</body>
+</html>
