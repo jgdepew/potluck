@@ -45,10 +45,10 @@
             {% csrf_token %}
             <label>Recipe Title: <input type="text" name="title"></label><br>
             <label>Description: <input type="text" name="description"></label><br>
-            <label>Prep Time Hours: <input type="text" name="prep_time_hour"></label><br>
-            <label>Prep Time Minutes: <input type="text" name="prep_time_minute"></label><br>
-            <label>Cook Time Hours: <input type="text" name="cook_time_hour"></label><br>
-            <label>Cook Time Minutes: <input type="text" name="cook_time_minute"></label><br>
+            <label>Prep Time Hours: <input type="number" name="prep_time_hour" min="0"></label><br>
+            <label>Prep Time Minutes: <input type="number" name="prep_time_minute" min="0"></label><br>
+            <label>Cook Time Hours: <input type="number" name="cook_time_hour" min="0"></label><br>
+            <label>Cook Time Minutes: <input type="number" name="cook_time_minute" min="0"></label><br>
             <input type="submit" value="Add Recipe">
         </form>
     </body>

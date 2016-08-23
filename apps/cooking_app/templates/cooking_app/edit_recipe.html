@@ -45,36 +45,67 @@
             {% csrf_token %}
             <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}"></label><br>
             <label>Description: <input type="text" name="description" value="{{recipe.description}}"></label><br>
-            <label>Prep Time Hours: <input type="text" name="prep_time_hour" value="{{recipe.prep_time_hour}}"></label>
-            <label>Prep Time Minutes: <input type="text" name="prep_time_minute" value="{{recipe.prep_time_minute}}"></label><br>
-            <label>Cook Time Hours: <input type="text" name="cook_time_hour" value="{{recipe.cook_time_hour}}"></label>
-            <label>Cook Time Minutes: <input type="text" name="cook_time_minute" value="{{recipe.cook_time_minute}}"></label><br>
+            <label>Prep Time Hours: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0"></label>
+            <label>Prep Time Minutes: <input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0"></label><br>
+            <label>Cook Time Hours: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"></label>
+            <label>Cook Time Minutes: <input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"></label><br>
             <input type="submit" value="Update Recipe">
         </form>
         <div id="steps">
             {% for step in steps %}
                 <!-- grab all stpes here -->
                 <div class="step">
-                    <form action="{% url 'potluck:update_step' %}" method="post">
+                    <form action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
                         {% csrf_token %}
-                        <label>Step #{{step.step_number}} <input type="hidden" name="step_number" value="{{step.step_number}}"></label>
-                        <label>Measurement: <input type="text" name="title"></label>
-                        <label>Ingredient: <input type="text" name="ingredient"></label>
-                        <label>Description: <input type="text" name="description"></label>
-                        <input type="hidden" name="cook_time"></label>
+                        <label>Step #{{step.step_number}}</label>
+                        <label>Measurement: <select name='measurement'>
+                            {% for measurement in measurements %}
+                                {% if measurement ==  step.measurement %}
+                                    <option selected="selected" value="{{measurement.measurement}}">{{measurement.measurement}}</option>
+                                {% else %}
+                                    <option value="{{measurement.measurement}}">{{measurement.measurement}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select></label>
+                        <input type="text" name="new_measurement" placeholder="Add new..">
+                        <label>Ingredient: <select name='ingredient'>
+                            {% for ingredient in ingredients %}
+                                {% if ingredient ==  step.ingredient %}
+                                    <option selected="selected" value="{{ingredient.ingredient}}">{{ingredient.ingredient}}</option>
+                                {% else %}
+                                    <option value="{{ingredient.ingredient}}">{{ingredient.ingredient}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select></label>
+                        <input type="text" name="new_ingredient" placeholder="Add new..">
+                        <label>Description: <input type="text" name="description" value="{{step.description}}"></label>
+                        <input type="hidden" name="step_id" value="{{step.id}}">
                         <input type="submit" value="Update Recipe">
                     </form>
                 </div>
             {% endfor %}
             <!-- show form to add a new step here -->
+            <hr>
             <div id="new_step">
                 <form action="{% url 'potluck:add_step' %}" method="post">
                     {% csrf_token %}
                     <label>Step #{{step_count}} <input type="hidden" name="step_number" value="{{step_count}}"></label>
-                    <label>Measurement: <input type="text" name="title"></label>
-                    <label>Ingredient: <input type="text" name="ingredient"></label>
+                    <label>Measurement: <select name='measurement'>
+                        <option value="">Select</option>
+                        {% for measurement in measurements %}
+                            <option value="{{measurement.measurement}}">{{measurement.measurement}}</option>
+                        {% endfor %}
+                    </select></label>
+                    <input type="text" name="new_measurement" placeholder="Add new..">
+                    <label>Ingredient: <select name='ingredient'>
+                        <option value="">Select</option>
+                        {% for ingredient in ingredients %}
+                        <option value="{{ingredient.ingredient}}">{{ingredient.ingredient}}</option>
+                        {% endfor %}
+                    </select></label>
+                    <input type="text" name="new_ingredient" placeholder="Add new..">
                     <label>Description: <input type="text" name="description"></label>
-                    <input type="hidden" name="cook_time"></label>
+                    <input type="hidden" name="recipe_id" value="{{recipe.id}}">
                     <input type="submit" value="Add Step">
                 </form>
             </div>

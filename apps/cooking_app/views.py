@@ -38,7 +38,6 @@ def add_recipe(request):
 	if request.method == 'POST':
 		if not Recipe.objects.validateRecipe(request):
 			return redirect(reverse('potluck:add_recipe'))
-		# recipe = Recipe.objects.make_new_recipe(request)
 		recipe = Recipe.objects.create(title=request.POST['title'], creator=User.objects.get(id=request.session['id']), description=request.POST['description'], prep_time_hour=request.POST['prep_time_hour'], prep_time_minute=request.POST['prep_time_minute'], cook_time_hour=request.POST['cook_time_hour'], cook_time_minute=request.POST['cook_time_minute'])
 		return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': recipe.id}))
 	return render(request, 'cooking_app/add_recipe.html', {'user': User.objects.get(id=request.session['id'])})
@@ -50,14 +49,18 @@ def edit_recipe(request, recipe_id):
 
 	if request.method == 'POST':
 		# update recipe here
-		pass
+		if not Recipe.objects.validateRecipe(request):
+			return redirect(reverse('potluck:edit_recipe'))
+		else:
+			Recipe.objects.update(request, recipe_id)
+
 	if len(Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)))>0:
-		steps = Step.objects.get(recipe=Recipe.objects.get(id=recipe_id))
+		steps = Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id))
 		step_count = steps.count() + 1
 	else:
 		steps = []
 		step_count = 1
-	return render(request, 'cooking_app/edit_recipe.html', {'user': User.objects.get(id=request.session['id']),'recipe': Recipe.objects.get(id=recipe_id), 'steps':steps, 'step_count': step_count})
+	return render(request, 'cooking_app/edit_recipe.html', {'user': User.objects.get(id=request.session['id']),'recipe': Recipe.objects.get(id=recipe_id), 'steps':steps, 'step_count': step_count, 'ingredients': Ingredient.objects.all(), 'measurements': Measurement.objects.all()})
 
 
 def add_step(request):
@@ -65,10 +68,12 @@ def add_step(request):
 		return redirect(reverse('potluck:login'))
 
 	#TODO create step
-	return render(request, 'cooking_app/edit_recipe.html', {'recipe': Recipe.objects.get(id=recipe_id), 'steps': Step.objects.get(recipe=Recipe.objects.get(id=recipe_id))})
+	step = Step.objects.add_step(request)
+
+	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
-def update_step(request):
+def update_step(request, step_id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 

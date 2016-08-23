@@ -75,7 +75,6 @@ class UserManager(models.Manager):
 			return False
 
 
-#Recipe validations
 class RecipeManager(models.Manager):
 	def validateRecipe(self, request):
 		no_errors = True
@@ -85,19 +84,47 @@ class RecipeManager(models.Manager):
 		if len(request.POST['description']) < 1:
 			messages.error(request, 'Description must be filled out')
 			no_errors = False
-		if len(request.POST['prep_time_hour']) < 1:
-			messages.error(request, 'Prep Time Hour must be filled out')
+		if len(request.POST['prep_time_hour']) < 1 and int(request.POST['prep_time_hour']) >= 0:
+			messages.error(request, 'Prep Time Hour must be filled out and be a number greater than 0')
 			no_errors = False
-		if len(request.POST['prep_time_minute']) < 1:
-			messages.error(request, 'Prep Time minute must be filled out')
+		if len(request.POST['prep_time_minute']) < 1 and int(request.POST['prep_time_minute']) >= 0:
+			messages.error(request, 'Prep Time minute must be filled out and be a number greater than 0')
 			no_errors = False
-		if len(request.POST['cook_time_hour']) < 1:
-			messages.error(request, 'Cook Time Hour must be filled out')
+		if len(request.POST['cook_time_hour']) < 1 and int(request.POST['cook_time_hour']) >= 0:
+			messages.error(request, 'Cook Time Hour must be filled out and be a number greater than 0')
 			no_errors = False
-		if len(request.POST['cook_time_minute']) < 1:
-			messages.error(request, 'Cook Time minute must be filled out')
+		if len(request.POST['cook_time_minute']) < 1 and int(request.POST['cook_time_minute']) >= 0:
+			messages.error(request, 'Cook Time minute must be filled out and be a number greater than 0')
 			no_errors = False
 		return no_errors
+
+	def update(self, request, recipe_id):
+		recipe = Recipe.objects.get(id=recipe_id)
+		recipe.title = request.POST['title']
+		recipe.description = request.POST['description']
+		recipe.prep_time_hour = request.POST['prep_time_hour']
+		recipe.prep_time_minute = request.POST['prep_time_minute']
+		recipe.cook_time_hour = request.POST['cook_time_hour']
+		recipe.cook_time_minute = request.POST['cook_time_minute']
+		recipe.save()
+		messages.success(request, 'Your recipe has been updated')
+
+
+class StepManager(models.Manager):
+	def add_step(self, request):
+		# test to see if they are adding their own measurement
+			#test if measurement is already in the table
+
+		#else create the measurement
+		measurement = Measurement.objects.create(measurement=request.POST['new_measurement'])
+
+		# test to see if they are adding their own ingredient
+			#test if ingredient is alreay in the table
+
+		# else create the ingredient
+		ingredient = Ingredient.objects.create(ingredient=request.POST['new_ingredient'])
+
+		return Step.objects.create(recipe=Recipe.objects.get(id=request.POST['recipe_id']), measurement=measurement, ingredient=ingredient, step_number=request.POST['step_number'], description=request.POST['description'])
 
 
 
@@ -146,12 +173,12 @@ class Measurement(models.Model):
 class Step(models.Model):
 	recipe = models.ForeignKey('Recipe')
 	measurement = models.ForeignKey('Measurement')
-	ingredient = models.ManyToManyField('Ingredient')
+	ingredient = models.ForeignKey('Ingredient')
 	step_number = models.IntegerField()
 	description = models.CharField(max_length=255)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
-
+	objects = StepManager()
 
 
 
