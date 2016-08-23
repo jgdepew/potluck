@@ -3,9 +3,38 @@
 <head>
 	<title>Profile</title>
 </head>
+<style type="text/css">
+	a:visited {
+		color: black;
+	}
+	#header li{
+		list-style: none;
+		display: inline-block;
+		margin-right: 20px;
+	}
+	#header{
+		display:inline-block;
+		text-align: center;
+		width: 1080px;
+	}
+	#title {
+		font-size: 2em;
+	}
+	#name {
+		font-size: 1.25em;
+		text-decoration: none;
+	}
+</style>
 <body>
 
-	<h3>User's Profile</h3>
+	<div id="header">
+		<p><a id="name" href="{% url 'potluck:show_user' id=request.session.id %}">{{request.session.name}}'s Profile</a></p>
+		<ul>
+			<li><a href="{% url 'potluck:index' %}">Home</a></li>
+			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+		</ul>
+	</div>
 
 </body>
 </html>
