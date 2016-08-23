@@ -5,7 +5,7 @@ from django.contrib import messages
 import bcrypt
 
 # Create your models here.
-class ValidationManager(models.Manager):
+class UserManager(models.Manager):
 	def RegisterValidation(self, request):
 		if 'password' in request.POST:
 			return False
@@ -74,6 +74,35 @@ class ValidationManager(models.Manager):
 			messages.error(request, 'Password incorrect.')
 			return False
 
+
+#Recipe validations
+class RecipeManager(models.Manager):
+	def validateRecipe(self, request):
+		no_errors = True
+		if len(request.POST['title']) < 1:
+			messages.error(request, 'Title must be filled out')
+			no_errors = False
+		if len(request.POST['description']) < 1:
+			messages.error(request, 'Description must be filled out')
+			no_errors = False
+		if len(request.POST['prep_time_hour']) < 1:
+			messages.error(request, 'Prep Time Hour must be filled out')
+			no_errors = False
+		if len(request.POST['prep_time_minute']) < 1:
+			messages.error(request, 'Prep Time minute must be filled out')
+			no_errors = False
+		if len(request.POST['cook_time_hour']) < 1:
+			messages.error(request, 'Cook Time Hour must be filled out')
+			no_errors = False
+		if len(request.POST['cook_time_minute']) < 1:
+			messages.error(request, 'Cook Time minute must be filled out')
+			no_errors = False
+		return no_errors
+
+
+
+
+
 class User(models.Model):
 	first_name = models.CharField(max_length=255)
 	last_name = models.CharField(max_length=255)
@@ -83,8 +112,7 @@ class User(models.Model):
 	description = models.CharField(max_length=255, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
-
-	objects = ValidationManager()
+	objects = UserManager()
 
 class Comment(models.Model):
 	comment = models.CharField(max_length=255)
@@ -93,12 +121,17 @@ class Comment(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 
 class Recipe(models.Model):
-	user = models.ManyToManyField('User')
+	title = models.CharField(max_length=255)
+	creator = models.ForeignKey('User')
+	user = models.ManyToManyField('User', related_name='others')
 	description = models.CharField(max_length=1000)
-	prep_time = models.DateTimeField()
-	cook_time = models.DateTimeField()
+	prep_time_hour = models.IntegerField()
+	prep_time_minute = models.IntegerField()
+	cook_time_hour = models.IntegerField()
+	cook_time_minute = models.IntegerField()
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
+	objects = RecipeManager()
 
 class Ingredient(models.Model):
 	ingredient = models.CharField(max_length=255)
@@ -114,7 +147,7 @@ class Step(models.Model):
 	recipe = models.ForeignKey('Recipe')
 	measurement = models.ForeignKey('Measurement')
 	ingredient = models.ManyToManyField('Ingredient')
-	step = models.IntegerField()
+	step_number = models.IntegerField()
 	description = models.CharField(max_length=255)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)

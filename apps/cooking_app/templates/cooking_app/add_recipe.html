@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Add Your recipe!</title>
+        <style type="text/css">
+        	a:visited {
+        		color: black;
+        	}
+        	#header li{
+        		list-style: none;
+        		display: inline-block;
+        		margin-right: 20px;
+        	}
+        	#header{
+        		display:inline-block;
+        		text-align: center;
+        		width: 1080px;
+        	}
+        	#title {
+        		font-size: 2em;
+        	}
+        	#name {
+        		font-size: 1.25em;
+        		text-decoration: none;
+        	}
+        </style>
+    </head>
+    <body>
+        <div id="header">
+    		<p>Welcome to <span id="title">potLuck</span>,</p>
+    		<p><a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a></p>
+    		<ul>
+    			<li><a href="{% url 'potluck:index' %}">Home</a></li>
+    			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+    			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+    		</ul>
+    	</div>
+        {% if messages %}
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form class="" action="{% url 'potluck:add_recipe' %}" method="post">
+            {% csrf_token %}
+            <label>Recipe Title: <input type="text" name="title"></label><br>
+            <label>Description: <input type="text" name="description"></label><br>
+            <label>Prep Time Hours: <input type="text" name="prep_time_hour"></label><br>
+            <label>Prep Time Minutes: <input type="text" name="prep_time_minute"></label><br>
+            <label>Cook Time Hours: <input type="text" name="cook_time_hour"></label><br>
+            <label>Cook Time Minutes: <input type="text" name="cook_time_minute"></label><br>
+            <input type="submit" value="Add Recipe">
+        </form>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<!--  -->
