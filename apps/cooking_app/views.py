@@ -9,12 +9,12 @@ def register(request):
 	return render(request, 'cooking_app/register.html')
 
 def loginValidation(request):
-	if User.objects.LoginValidation(request, request.POST) == False:
+	if User.objects.LoginValidation(request) == False:
 		return redirect(reverse('potluck:login'))
 	return redirect(reverse('potluck:index'))
 
 def registerValidation(request):
-	if User.objects.RegisterValidation(request, request.POST) == False:
+	if User.objects.RegisterValidation(request) == False:
 		return redirect(reverse('potluck:register'))
 	return redirect(reverse('potluck:index'))
 
