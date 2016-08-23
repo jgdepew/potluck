@@ -27,8 +27,8 @@
 </style>
 <body>
 	<div id="header">
-		<p>Welcome to <span id="title">potLuck</span>,</p> 
-		<p><a id="name" href="{% url 'potluck:show_user' id=request.session.id %}">{{request.session.name}}</a></p>
+		<p>Welcome to <span id="title">potLuck</span>,</p>
+		<p><a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a></p>
 		<ul>
 			<li><a href="{% url 'potluck:index' %}">Home</a></li>
 			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>

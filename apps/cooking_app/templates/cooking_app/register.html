@@ -11,9 +11,9 @@
 	</div>
 
 	<h4>Register</h4>
-	<form action="{% url 'potluck:register_validation' %}" method="post">
+	<form action="{% url 'potluck:register' %}" method="post">
 		{% csrf_token %}
-		<p>First Name: <input type="text" name="first_name"></p>	
+		<p>First Name: <input type="text" name="first_name"></p>
 		<p>Last Name: <input type="text" name="last_name"></p>
 		<p>Email:	<input type="text" name="email"></p>
 		<p>Password:<input type="text" name="password1"></p>

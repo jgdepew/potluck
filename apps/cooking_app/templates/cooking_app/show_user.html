@@ -28,7 +28,7 @@
 <body>
 
 	<div id="header">
-		<p><a id="name" href="{% url 'potluck:show_user' id=request.session.id %}">{{request.session.name}}'s Profile</a></p>
+		<p><a id="name" href="{% url 'potluck:show_user' id=request.session.id %}">{{user.first_name}}'s Profile</a></p>
 		<ul>
 			<li><a href="{% url 'potluck:index' %}">Home</a></li>
 			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>

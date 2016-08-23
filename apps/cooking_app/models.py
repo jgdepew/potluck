@@ -7,7 +7,7 @@ import bcrypt
 # Create your models here.
 class ValidationManager(models.Manager):
 	def RegisterValidation(self, request):
-		if 'password' in reqest.POST:
+		if 'password' in request.POST:
 			return False
 
 		errors = 0

@@ -2,15 +2,20 @@
 <html>
 <head>
 	<title>potluck/login</title>
+	<style>
+	/*#title {
+		font-size: 2em;
+	}
+	</style>*/
 </head>
 <body>
 
 	<div id="title">
-		<h2>potluck</h2>
+		<h2><span id="title">potLuck</span></h2>
 		<p>Because shared food is best food</p>
 	</div>
 	<h4>Login</h4>
-	<form action="{% url 'potluck:login_validation' %}" method="post">
+	<form action="{% url 'potluck:login' %}" method="post">
 		{% csrf_token %}
 		<p>Email:	<input type="text" name="email"></p>
 		<p>Password:<input type="text" name="password"></p>
