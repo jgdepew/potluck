@@ -46,14 +46,6 @@
                     $.post(this.action, $(this).serialize(), function(serverResponse){
                         $('body').html(serverResponse)
                     })
-                    // $.ajax({
-                    //     url: this.action,
-                    //     method: 'post',
-                    //     data: $(this).serialize(),
-                    //     success: function(serverResponse){
-                    //         $('body').html(serverResponse)
-                    //     }
-                    // })
                 })
                 $( ".update_step" ).focusout(function() {
                     // $(selector).post(URL,data,function(data,status,xhr),dataType)
@@ -64,19 +56,11 @@
                         // $('body').html(serverResponse)
                     })
                 })
-                $('a').click(function(e){
+                $('.link').click(function(e){
                     e.preventDefault();
-                    $(this).parent().parent().remove()
-                    $.get($(this).attr('href'), function(serverResponse){})
-                    // $.ajax({
-                    //     url: $(this).attr('href'),
-                    //     method: 'get',
-                    //     data: $(this).serialize(),
-                    //     success: function(serverResponse){
-                    //         $('body').html(serverResponse)
-                    //         $(this).parent().parent().remove()
-                    //     }
-                    // })
+                    $.get($(this).attr('href'), function(serverResponse){
+                        $('#div_'+serverResponse.to_delete).remove()
+                    })
                 })
             })
         </script>
@@ -110,7 +94,7 @@
         <div id="steps">
             <h3>Update your steps</h3>
             {% for step in steps %}
-                <div class="step">
+                <div id="div_{{step.id}}" class="step">
                     <form id='{{step.id}}' class='update_step' action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
                         {% csrf_token %}
                         <label>Step #{{ forloop.counter }}</label>
@@ -136,7 +120,7 @@
                         <input type="text" name="new_ingredient" placeholder="Add new ingredient">
                         <label>Description: <textarea name="description" rows="3" cols="25">{{step.description}}</textarea></label>
                         <input type="hidden" name="step_id" value="{{step.id}}">
-                        <a href="{% url 'potluck:delete_step' step_id=step.id recipe_id=recipe.id %}">Delete Step</a>
+                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id recipe_id=recipe.id %}">Delete Step</a>
                         <!-- <input type="submit" value="Update Step"> -->
                     </form>
                 </div>

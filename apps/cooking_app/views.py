@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from .models import User, Comment, Recipe, Ingredient, Measurement, Step
 from django.contrib import messages
 import datetime
+from django.http import JsonResponse
 
 # Create your views here.
 def login(request):
@@ -103,7 +104,7 @@ def delete_step(request, step_id, recipe_id):
 
 	Step.objects.get(id=step_id).delete()
 	print 'deleted'
-	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': recipe_id}))
+	return JsonResponse({'to_delete': step_id})
 
 
 def show_user(request, id):
