@@ -3,6 +3,9 @@
     <head>
         <meta charset="utf-8">
         <title>Add Your recipe!</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+        {% load staticfiles %}
+        <script src="{% static 'cooking_app/js/js.cookie.js' %}"></script>
         <style type="text/css">
         	a:visited {
         		color: black;
@@ -32,10 +35,51 @@
                 background-color: #eaeaea;
                 outline-width: medium;
             }
-            label{
+            label, select, input{
                 vertical-align: top;
             }
         </style>
+        <script>
+            $(document).ready(function(){
+                $('form').submit(function(e){
+                    e.preventDefault();
+                    $.post(this.action, $(this).serialize(), function(serverResponse){
+                        $('body').html(serverResponse)
+                    })
+                    // $.ajax({
+                    //     url: this.action,
+                    //     method: 'post',
+                    //     data: $(this).serialize(),
+                    //     success: function(serverResponse){
+                    //         $('body').html(serverResponse)
+                    //     }
+                    // })
+                })
+                $( ".update_step" ).focusout(function() {
+                    // $(selector).post(URL,data,function(data,status,xhr),dataType)
+                    // var id = this.id
+                    $.post(this.action, $(this).serialize(), function(serverResponse){
+                        var ParsedElements = jQuery.parseHTML(serverResponse);
+                        // $('#'+id).html($("<html/>").html(ParsedElements).find('#'+id));
+                        // $('body').html(serverResponse)
+                    })
+                })
+                $('a').click(function(e){
+                    e.preventDefault();
+                    $(this).parent().parent().remove()
+                    $.get($(this).attr('href'), function(serverResponse){})
+                    // $.ajax({
+                    //     url: $(this).attr('href'),
+                    //     method: 'get',
+                    //     data: $(this).serialize(),
+                    //     success: function(serverResponse){
+                    //         $('body').html(serverResponse)
+                    //         $(this).parent().parent().remove()
+                    //     }
+                    // })
+                })
+            })
+        </script>
     </head>
     <body>
         <div id="header">
@@ -52,7 +96,7 @@
                 <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
             {% endfor %}
         {% endif %}
-        <form class="" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post">
+        <form id="update_recipe" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post">
             {% csrf_token %}
             <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}"></label><br>
             <label>Prep Time: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0"> hrs </label>
@@ -67,9 +111,9 @@
             <h3>Update your steps</h3>
             {% for step in steps %}
                 <div class="step">
-                    <form action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
+                    <form id='{{step.id}}' class='update_step' action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
                         {% csrf_token %}
-                        <label>Step #{{step.step_number}}</label>
+                        <label>Step #{{ forloop.counter }}</label>
                         <label>Measurement: <select name='measurement'>
                             {% for measurement in measurements %}
                                 {% if measurement ==  step.measurement %}
@@ -90,33 +134,32 @@
                             {% endfor %}
                         </select></label>
                         <input type="text" name="new_ingredient" placeholder="Add new ingredient">
-                        <label>Description: <input type="text" name="description" value="{{step.description}}"></label>
+                        <label>Description: <textarea name="description" rows="3" cols="25">{{step.description}}</textarea></label>
                         <input type="hidden" name="step_id" value="{{step.id}}">
-                        <input type="submit" value="Update Recipe">
+                        <a href="{% url 'potluck:delete_step' step_id=step.id recipe_id=recipe.id %}">Delete Step</a>
+                        <!-- <input type="submit" value="Update Step"> -->
                     </form>
                 </div>
             {% endfor %}
             <hr>
             <div id="new_step">
                 <h3>Add a Step</h3>
-                <form action="{% url 'potluck:add_step' %}" method="post">
+                <form id='new_step_form' class='new_step' action="{% url 'potluck:add_step' %}" method="post">
                     {% csrf_token %}
-                    <label>Step #{{step_count}} <input type="hidden" name="step_number" value="{{step_count}}"></label>
+                    <label>Step #{{step_count}}</label>
                     <label>Measurement: <select name='measurement'>
-                        <option value="">Select</option>
                         {% for measurement in measurements %}
                             <option value="{{measurement.id}}">{{measurement.measurement}}</option>
                         {% endfor %}
                     </select></label>
                     <input type="text" name="new_measurement" placeholder="Add new measurement">
                     <label>Ingredient: <select name='ingredient'>
-                        <option value="">Select</option>
                         {% for ingredient in ingredients %}
                         <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
                         {% endfor %}
                     </select></label>
                     <input type="text" name="new_ingredient" placeholder="Add new ingredient">
-                    <label>Description: <input type="text" name="description"></label>
+                    <label>Description: <textarea name="description" rows="3" cols="25"></textarea></label>
                     <input type="hidden" name="recipe_id" value="{{recipe.id}}">
                     <input type="submit" value="Add Step">
                 </form>

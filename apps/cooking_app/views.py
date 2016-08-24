@@ -81,11 +81,20 @@ def update_step(request, step_id):
 	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
+def delete_step(request, step_id, recipe_id):
+	if 'id' not in request.session:
+		return redirect(reverse('potluck:login'))
+
+	Step.objects.get(id=step_id).delete()
+	print 'deleted'
+	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': recipe_id}))
+
+
 def show_user(request, id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
-	#TODO pass in user and recipes
+	#TODO pass in user and recipes related to user
 
 	return render(request, 'cooking_app/show_user.html', {'user': User.objects.get(id=id)})
 

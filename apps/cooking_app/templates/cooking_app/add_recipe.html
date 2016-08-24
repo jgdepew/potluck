@@ -31,7 +31,7 @@
                 border: none;
                 background-color: #eaeaea;
                 outline-width: medium;
-            }
+            } value="0"
             label{
                 vertical-align: top;
             }
@@ -55,10 +55,10 @@
         <form class="" action="{% url 'potluck:add_recipe' %}" method="post">
             {% csrf_token %}
             <label>Recipe Title: <input type="text" name="title"></label><br>
-            <label>Prep Time:<input type="number" name="prep_time_hour" min="0"> hrs</label>
-            <label><input type="number" name="prep_time_minute" min="0"> min</label><br>
-            <label>Cook Time: <input type="number" name="cook_time_hour" min="0"> hrs</label>
-            <label><input type="number" name="cook_time_minute" min="0"> min</label><br>
+            <label>Prep Time:<input type="number" name="prep_time_hour" min="0" value="0"> hrs</label>
+            <label><input type="number" name="prep_time_minute" min="0" value="0"> min</label><br>
+            <label>Cook Time: <input type="number" name="cook_time_hour" min="0" value="0"> hrs</label>
+            <label><input type="number" name="cook_time_minute" min="0" value="0"> min</label><br>
             <label>Description: <textarea name="description" rows="3" cols="25"></textarea></label><br>
             <input type="submit" value="Add Recipe">
         </form>

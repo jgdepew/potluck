@@ -129,7 +129,7 @@ class StepManager(models.Manager):
 		measurement = self.find_measurement(request)
 		ingredient = self.find_ingrediant(request)
 		# create and return step
-		return Step.objects.create(recipe=Recipe.objects.get(id=request.POST['recipe_id']), measurement=measurement, ingredient=ingredient, step_number=request.POST['step_number'], description=request.POST['description'])
+		return Step.objects.create(recipe=Recipe.objects.get(id=request.POST['recipe_id']), measurement=measurement, ingredient=ingredient, description=request.POST['description'])
 
 	def update_step(self, request, step_id):
 		measurement = self.find_measurement(request)
@@ -223,7 +223,6 @@ class Step(models.Model):
 	recipe = models.ForeignKey('Recipe')
 	measurement = models.ForeignKey('Measurement')
 	ingredient = models.ForeignKey('Ingredient')
-	step_number = models.IntegerField()
 	description = models.CharField(max_length=255)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
