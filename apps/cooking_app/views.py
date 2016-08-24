@@ -36,16 +36,25 @@ def register(request):
 def index(request):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
-	return render(request, 'cooking_app/index.html', {'user': User.objects.get(id=request.session['id'])})
+	context ={
+	'user': User.objects.get(id=request.session['id']),
+	'recipes': Recipe.objects.all()
+	}
+	return render(request, 'cooking_app/index.html', context)
 
 
-def show_recipe(request, id):
+def show_recipe(request, recipe_id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
 	if request.method == 'POST':
 		return redirect(reverse('potluck:create'))
-	return render(request, 'cooking_app/show_recipe.html')\
+	context = {
+	'user': User.objects.get(id=request.session['id']),
+	'recipe': Recipe.objects.get(id=recipe_id),
+	'steps': Step.objects.filter(recipe=recipe_id)
+	}
+	return render(request, 'cooking_app/show_recipe.html', context)
 
 
 def add_recipe(request):
@@ -112,8 +121,11 @@ def show_user(request, id):
 		return redirect(reverse('potluck:login'))
 
 	#TODO pass in user and recipes related to user
-
-	return render(request, 'cooking_app/show_user.html', {'user': User.objects.get(id=id)})
+	context = {
+	'user': User.objects.get(id=id),
+	'recipes': Recipe.objects.filter(creator=User.objects.get(id=id))
+	}
+	return render(request, 'cooking_app/show_user.html', context)
 
 
 def logout(request):
