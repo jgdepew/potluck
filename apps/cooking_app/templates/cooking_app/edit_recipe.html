@@ -120,7 +120,7 @@
                         <input type="text" name="new_ingredient" placeholder="Add new ingredient">
                         <label>Description: <textarea name="description" rows="3" cols="25">{{step.description}}</textarea></label>
                         <input type="hidden" name="step_id" value="{{step.id}}">
-                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id recipe_id=recipe.id %}">Delete Step</a>
+                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}">Delete Step</a>
                         <!-- <input type="submit" value="Update Step"> -->
                     </form>
                 </div>
