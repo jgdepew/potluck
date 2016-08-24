@@ -6,172 +6,150 @@ import bcrypt
 
 # Create your models here.
 class UserManager(models.Manager):
-	def RegisterValidation(self, request):
-		if 'password' in request.POST:
+	def RegisterValidation(self, form_info):
+		if 'password' in form_info:
 			return False
 
-		errors = 0
+		errors = []
 		EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-		first_name = request.POST['first_name']
-		last_name = request.POST['last_name']
-		email = request.POST['email']
-		password1 = request.POST['password1']
-		password2 = request.POST['password2']
+		first_name = form_info['first_name']
+		last_name = form_info['last_name']
+		email = form_info['email']
+		password1 = form_info['password1']
+		password2 = form_info['password2']
 		if  len(User.objects.all()) < 1:
 			user_level = 9
 		else:
 			user_level = 1
 
 		if len(email)<1:
-			messages.error(request, 'No email entered.')
-			errors += 1
+			errors.append('No email entered.')
 		elif not EMAIL_REGEX.match(email):
-			messages.error(request, 'Not a valid email.')
-			errors += 1
+			errors.append('Not a valid email.')
 		elif User.objects.filter(email=email):
-			messages.error(request, 'Email already in use.')
-			errors += 1
+			errors.append('Email already in use.')
 
 		if len(first_name) < 2 or len(first_name) < 2:
-			messages.error(request, 'First and last name must be longer than 2 characters.')
-			errors += 1
+			errors.append('First and last name must be longer than 2 characters.')
 
 		if password1 != password2:
-			messages.error(request, 'Passwords do not match.')
-			errors += 1
+			errors.append('Passwords do not match.')
 		elif len(password1)<8:
-			messages.error(request, 'Password must be at least 8 characters.')
-			errors += 1
+			errors.append('Password must be at least 8 characters.')
 
-		if errors > 0:
-			return False
+		if len(errors) > 0:
+			return (errors)
 		else:
 			password = str(password1)
 			hashed = bcrypt.hashpw(password, bcrypt.gensalt())
 			User.objects.create(first_name=first_name, last_name=last_name,email=email, password=hashed, user_level=user_level, description=None)
 			user = User.objects.get(email=email)
-			request.session['id'] = user.id
-			request.session['user_level'] = user.user_level
-			return True
+			# request.session['id'] = user.id
+			# request.session['user_level'] = user.user_level
+			return (errors, user.id, user.user_level)
 
-	def LoginValidation(self, request):
-		if 'first_name' in request.POST:
-			return False
-
-		email = request.POST['email']
-		password = request.POST['password']
+	def LoginValidation(self, form_info):
+		errors = []
+		email = form_info['email']
+		password = form_info['password']
 		if len(User.objects.filter(email=email))<1:
-			messages.error(request, 'Invalid login information.')
-			return False
+			errors.append('Invalid login information.')
+			return (errors)
 		user = User.objects.get(email=email)
 		password_entered = password.encode()
 		hashed_entered = bcrypt.hashpw(password_entered, bcrypt.gensalt())
 		if email == user.email and bcrypt.hashpw(password_entered, user.password.encode()) == user.password:
-			request.session['id'] = user.id
-			request.session['user_level'] = user.user_level
-			return True
+			# request.session['id'] = user.id
+			# request.session['user_level'] = user.user_level
+			return (errors, user.id, user.user_level)
 		else:
-			messages.error(request, 'Password incorrect.')
-			return False
+			errors.append('Password incorrect.')
+			return (errors)
 
 
 
 class RecipeManager(models.Manager):
-	def validateRecipe(self, request):
-		no_errors = True
-		if len(request.POST['title']) < 1:
-			messages.error(request, 'Title must be filled out')
-			no_errors = False
-		if len(request.POST['description']) < 1:
-			messages.error(request, 'Description must be filled out')
-			no_errors = False
-		if len(request.POST['prep_time_hour']) < 1:
-			messages.error(request, 'Prep Time Hour must be filled out')
-			no_errors = False
-		# if int(request.POST['prep_time_hour']) >= 0:
-		# 	messages.error(request, 'Prep Time Hour must be a number 0 or more')
-		# 	no_errors = False
-		if len(request.POST['prep_time_minute']) < 1:
-			messages.error(request, 'Prep Time minute must be filled out')
-			no_errors = False
-		# if int(request.POST['prep_time_minute']) >= 0 and int(request.POST['prep_time_minute']) < 60:
-		# 	messages.error(request, 'Prep Time minute must be a number 0 or more and less than 60')
-		# 	no_errors = False
-		if len(request.POST['cook_time_hour']) < 1:
-			messages.error(request, 'Cook Time Hour must be filled out')
-			no_errors = False
-		# if int(request.POST['cook_time_hour']) >= 0:
-		# 	messages.error(request, 'Cook Time Hour must be a number 0 or more')
-		# 	no_errors = False
-		if len(request.POST['cook_time_minute']) < 1:
-			messages.error(request, 'Cook Time minute must be filled out')
-			no_errors = False
-		# if int(request.POST['cook_time_minute']) >= 0 and int(request.POST['cook_time_minute']) < 60:
-		# 	messages.error(request, 'Cook Time minute must be a number 0 or more and less than 60')
-		# 	no_errors = False
-		return no_errors
-
-	def update(self, request, recipe_id):
+	def validateRecipe(self, form_info):
+		errors = []
+		if len(form_info['title']) < 1:
+			errors.append('Title must be filled out')
+		if len(form_info['description']) < 1:
+			errors.append('Description must be filled out')
+		if len(form_info['prep_time_hour']) < 1:
+			errors.append('Prep Time Hour must be filled out')
+		# if int(form_info['prep_time_hour']) >= 0:
+		# 	errors.append('Prep Time Hour must be a number 0 or more')
+		if len(form_info['prep_time_minute']) < 1:
+			errors.append('Prep Time minute must be filled out')
+		# if int(form_info['prep_time_minute']) >= 0 and int(form_info['prep_time_minute']) < 60:
+		# 	errors.append('Prep Time minute must be a number 0 or more and less than 60')
+		if len(form_info['cook_time_hour']) < 1:
+			errors.append('Cook Time Hour must be filled out')
+		# if int(form_info['cook_time_hour']) >= 0:
+		# 	errors.append('Cook Time Hour must be a number 0 or more')
+		if len(form_info['cook_time_minute']) < 1:
+			errors.append('Cook Time minute must be filled out')
+		# if int(form_info['cook_time_minute']) >= 0 and int(form_info['cook_time_minute']) < 60:
+		# 	errors.append('Cook Time minute must be a number 0 or more and less than 60')
+		return errors
+	def update(self, form_info, recipe_id):
 		recipe = Recipe.objects.get(id=recipe_id)
-		recipe.title = request.POST['title']
-		recipe.description = request.POST['description']
-		recipe.prep_time_hour = request.POST['prep_time_hour']
-		recipe.prep_time_minute = request.POST['prep_time_minute']
-		recipe.cook_time_hour = request.POST['cook_time_hour']
-		recipe.cook_time_minute = request.POST['cook_time_minute']
+		recipe.title = form_info['title']
+		recipe.description = form_info['description']
+		recipe.prep_time_hour = form_info['prep_time_hour']
+		recipe.prep_time_minute = form_info['prep_time_minute']
+		recipe.cook_time_hour = form_info['cook_time_hour']
+		recipe.cook_time_minute = form_info['cook_time_minute']
 		recipe.save()
-		messages.success(request, 'Your recipe has been updated')
-
-
 
 class StepManager(models.Manager):
-	def add_step(self, request):
-		measurement = self.find_measurement(request)
-		ingredient = self.find_ingrediant(request)
+	def add_step(self, form_info):
+		measurement = self.find_measurement(form_info)
+		ingredient = self.find_ingrediant(form_info)
 		# create and return step
-		return Step.objects.create(recipe=Recipe.objects.get(id=request.POST['recipe_id']), measurement=measurement, ingredient=ingredient, description=request.POST['description'])
+		return Step.objects.create(recipe=Recipe.objects.get(id=form_info['recipe_id']), measurement=measurement, ingredient=ingredient, description=form_info['description'])
 
-	def update_step(self, request, step_id):
-		measurement = self.find_measurement(request)
-		ingredient = self.find_ingrediant(request)
+	def update_step(self, form_info, step_id):
+		measurement = self.find_measurement(form_info)
+		ingredient = self.find_ingrediant(form_info)
 		# update and return step
 		step = Step.objects.get(id=step_id)
 		step.measurement = measurement
 		step.ingredient = ingredient
-		step.description = request.POST['description']
+		step.description = form_info['description']
 		step.save()
 		return step
 
-	def find_measurement(self, request):
-		if request.POST['new_measurement'] == '': # They selected an existing measurement
-			measurement = Measurement.objects.get(id=request.POST['measurement'])
+	def find_measurement(self, form_info):
+		if form_info['new_measurement'] == '': # They selected an existing measurement
+			measurement = Measurement.objects.get(id=form_info['measurement'])
 		else: # They opted to create a new measurement
 			#test if measurement is already in the table
 			measurements = Measurement.objects.all()
 			create = True
 			for measure in measurements:
-				if measure.measurement == request.POST['new_measurement']: # They typed in an existing measurement
+				if measure.measurement == form_info['new_measurement']: # They typed in an existing measurement
 					measurement = measure # this prevents duplicate values
 					create = False
 					break
 			if create: # the measurement they provided is new and should be added
-				measurement = Measurement.objects.create(measurement=request.POST['new_measurement'])
+				measurement = Measurement.objects.create(measurement=form_info['new_measurement'])
 		return measurement
 
-	def find_ingrediant(self, request):
-		if request.POST['new_ingredient'] == '': # They selected an existing ingredient
-			ingredient = Ingredient.objects.get(id=request.POST['ingredient'])
+	def find_ingrediant(self, form_info):
+		if form_info['new_ingredient'] == '': # They selected an existing ingredient
+			ingredient = Ingredient.objects.get(id=form_info['ingredient'])
 		else: # They opted to create a new ingredient
 			#test if ingredient is already in the table
 			ingredients = Ingredient.objects.all()
 			create = True
 			for ingred in ingredients:
-				if ingred.ingredient == request.POST['new_ingredient']: # They typed in an existing ingredient
+				if ingred.ingredient == form_info['new_ingredient']: # They typed in an existing ingredient
 					ingredient = ingred # this prevents duplicate values
 					create = False
 					break
 			if create: # the ingredient they provided is new and should be added
-				ingredient = Ingredient.objects.create(ingredient=request.POST['new_ingredient'])
+				ingredient = Ingredient.objects.create(ingredient=form_info['new_ingredient'])
 		return ingredient
 
 

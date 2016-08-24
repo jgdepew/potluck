@@ -5,14 +5,30 @@ import datetime
 
 # Create your views here.
 def login(request):
-	if request.method == "POST" and User.objects.LoginValidation(request):
-		return redirect(reverse('potluck:index'))
+	if request.method == "POST":
+		results = User.objects.LoginValidation(request.POST)
+		print results
+		if len(results[0])<1:
+			request.session['id'] = results[1]
+			request.session['user_level'] = results[2]
+			return redirect(reverse('potluck:index'))
+		else:
+			for error in results:
+				messages.error(request, error)
 	return render(request, 'cooking_app/login.html')
 
 
 def register(request):
-	if request.method == "POST" and User.objects.RegisterValidation(request):
-		return redirect(reverse('potluck:index'))
+	if request.method == "POST":
+		results = User.objects.RegisterValidation(request.POST)
+		if len(results[0])<1:
+			request.session['id'] = results[1]
+			request.session['user_level'] = results[2]
+			return redirect(reverse('potluck:index'))
+		else:
+			for error in results:
+				print error
+				messages.error(request, error)
 	return render(request, 'cooking_app/register.html')
 
 
@@ -36,7 +52,7 @@ def add_recipe(request):
 		return redirect(reverse('potluck:login'))
 
 	if request.method == 'POST': # if 'POST' we are trying to add something, else trying to display form to add
-		if not Recipe.objects.validateRecipe(request): #run validations. returns false if failed
+		if len(Recipe.objects.validateRecipe(request.POST))>0: #run validations. returns errors if failed
 			return redirect(reverse('potluck:add_recipe'))
 		#create the recipe if validations passed
 		recipe = Recipe.objects.create(title=request.POST['title'], creator=User.objects.get(id=request.session['id']), description=request.POST['description'], prep_time_hour=request.POST['prep_time_hour'], prep_time_minute=request.POST['prep_time_minute'], cook_time_hour=request.POST['cook_time_hour'], cook_time_minute=request.POST['cook_time_minute'])
@@ -50,7 +66,7 @@ def edit_recipe(request, recipe_id):
 		return redirect(reverse('potluck:login'))
 
 	if request.method == 'POST': # if 'POST' we are trying to update recipe, else trying to display edit page
-		if not Recipe.objects.validateRecipe(request): # run validations. returns false if failed
+		if len(Recipe.objects.validateRecipe(request.POST))>0: # run validations. returns errors if failed
 			return redirect(reverse('potluck:edit_recipe'))
 		else:
 			Recipe.objects.update(request, recipe_id) # passed validation, not update
@@ -69,7 +85,7 @@ def add_step(request):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
-	step = Step.objects.add_step(request) # runs code to validate step and return step after creation
+	step = Step.objects.add_step(request.POST) # runs code to validate step and return step after creation
 	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
@@ -77,7 +93,7 @@ def update_step(request, step_id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
-	step = Step.objects.update_step(request, step_id) # runs code to validate step and return step after update
+	step = Step.objects.update_step(request.POST, step_id) # runs code to validate step and return step after update
 	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
