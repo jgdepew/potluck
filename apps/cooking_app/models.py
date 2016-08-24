@@ -75,6 +75,7 @@ class UserManager(models.Manager):
 			return False
 
 
+
 class RecipeManager(models.Manager):
 	def validateRecipe(self, request):
 		no_errors = True
@@ -87,27 +88,27 @@ class RecipeManager(models.Manager):
 		if len(request.POST['prep_time_hour']) < 1:
 			messages.error(request, 'Prep Time Hour must be filled out')
 			no_errors = False
-		if int(request.POST['prep_time_hour']) >= 0:
-			messages.error(request, 'Prep Time Hour must be a number greater than 0')
-			no_errors = False
+		# if int(request.POST['prep_time_hour']) >= 0:
+		# 	messages.error(request, 'Prep Time Hour must be a number 0 or more')
+		# 	no_errors = False
 		if len(request.POST['prep_time_minute']) < 1:
 			messages.error(request, 'Prep Time minute must be filled out')
 			no_errors = False
-		if int(request.POST['prep_time_minute']) >= 0:
-			messages.error(request, 'Prep Time minute must be a number greater than 0')
-			no_errors = False
+		# if int(request.POST['prep_time_minute']) >= 0 and int(request.POST['prep_time_minute']) < 60:
+		# 	messages.error(request, 'Prep Time minute must be a number 0 or more and less than 60')
+		# 	no_errors = False
 		if len(request.POST['cook_time_hour']) < 1:
 			messages.error(request, 'Cook Time Hour must be filled out')
 			no_errors = False
-		if int(request.POST['cook_time_hour']) >= 0:
-			messages.error(request, 'Cook Time Hour must be a number greater than 0')
-			no_errors = False
+		# if int(request.POST['cook_time_hour']) >= 0:
+		# 	messages.error(request, 'Cook Time Hour must be a number 0 or more')
+		# 	no_errors = False
 		if len(request.POST['cook_time_minute']) < 1:
 			messages.error(request, 'Cook Time minute must be filled out')
 			no_errors = False
-		if int(request.POST['cook_time_minute']) >= 0:
-			messages.error(request, 'Cook Time minute must be a number greater than 0')
-			no_errors = False
+		# if int(request.POST['cook_time_minute']) >= 0 and int(request.POST['cook_time_minute']) < 60:
+		# 	messages.error(request, 'Cook Time minute must be a number 0 or more and less than 60')
+		# 	no_errors = False
 		return no_errors
 
 	def update(self, request, recipe_id):
@@ -122,21 +123,57 @@ class RecipeManager(models.Manager):
 		messages.success(request, 'Your recipe has been updated')
 
 
+
 class StepManager(models.Manager):
 	def add_step(self, request):
-		# test to see if they are adding their own measurement
-			#test if measurement is already in the table
-
-		#else create the measurement
-		measurement = Measurement.objects.create(measurement=request.POST['new_measurement'])
-
-		# test to see if they are adding their own ingredient
-			#test if ingredient is alreay in the table
-
-		# else create the ingredient
-		ingredient = Ingredient.objects.create(ingredient=request.POST['new_ingredient'])
-
+		measurement = self.find_measurement(request)
+		ingredient = self.find_ingrediant(request)
+		# create and return step
 		return Step.objects.create(recipe=Recipe.objects.get(id=request.POST['recipe_id']), measurement=measurement, ingredient=ingredient, step_number=request.POST['step_number'], description=request.POST['description'])
+
+	def update_step(self, request, step_id):
+		measurement = self.find_measurement(request)
+		ingredient = self.find_ingrediant(request)
+		# update and return step
+		step = Step.objects.get(id=step_id)
+		step.measurement = measurement
+		step.ingredient = ingredient
+		step.description = request.POST['description']
+		step.save()
+		return step
+
+	def find_measurement(self, request):
+		if request.POST['new_measurement'] == '': # They selected an existing measurement
+			measurement = Measurement.objects.get(id=request.POST['measurement'])
+		else: # They opted to create a new measurement
+			#test if measurement is already in the table
+			measurements = Measurement.objects.all()
+			create = True
+			for measure in measurements:
+				if measure.measurement == request.POST['new_measurement']: # They typed in an existing measurement
+					measurement = measure # this prevents duplicate values
+					create = False
+					break
+			if create: # the measurement they provided is new and should be added
+				measurement = Measurement.objects.create(measurement=request.POST['new_measurement'])
+		return measurement
+
+	def find_ingrediant(self, request):
+		if request.POST['new_ingredient'] == '': # They selected an existing ingredient
+			ingredient = Ingredient.objects.get(id=request.POST['ingredient'])
+		else: # They opted to create a new ingredient
+			#test if ingredient is already in the table
+			ingredients = Ingredient.objects.all()
+			create = True
+			for ingred in ingredients:
+				if ingred.ingredient == request.POST['new_ingredient']: # They typed in an existing ingredient
+					ingredient = ingred # this prevents duplicate values
+					create = False
+					break
+			if create: # the ingredient they provided is new and should be added
+				ingredient = Ingredient.objects.create(ingredient=request.POST['new_ingredient'])
+		return ingredient
+
 
 
 

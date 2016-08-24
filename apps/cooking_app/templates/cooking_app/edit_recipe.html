@@ -73,9 +73,9 @@
                         <label>Measurement: <select name='measurement'>
                             {% for measurement in measurements %}
                                 {% if measurement ==  step.measurement %}
-                                    <option selected="selected" value="{{measurement.measurement}}">{{measurement.measurement}}</option>
+                                    <option selected="selected" value="{{measurement.id}}">{{measurement.measurement}}</option>
                                 {% else %}
-                                    <option value="{{measurement.measurement}}">{{measurement.measurement}}</option>
+                                    <option value="{{measurement.id}}">{{measurement.measurement}}</option>
                                 {% endif %}
                             {% endfor %}
                         </select></label>
@@ -83,9 +83,9 @@
                         <label>Ingredient: <select name='ingredient'>
                             {% for ingredient in ingredients %}
                                 {% if ingredient ==  step.ingredient %}
-                                    <option selected="selected" value="{{ingredient.ingredient}}">{{ingredient.ingredient}}</option>
+                                    <option selected="selected" value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
                                 {% else %}
-                                    <option value="{{ingredient.ingredient}}">{{ingredient.ingredient}}</option>
+                                    <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
                                 {% endif %}
                             {% endfor %}
                         </select></label>
@@ -105,14 +105,14 @@
                     <label>Measurement: <select name='measurement'>
                         <option value="">Select</option>
                         {% for measurement in measurements %}
-                            <option value="{{measurement.measurement}}">{{measurement.measurement}}</option>
+                            <option value="{{measurement.id}}">{{measurement.measurement}}</option>
                         {% endfor %}
                     </select></label>
                     <input type="text" name="new_measurement" placeholder="Add new measurement">
                     <label>Ingredient: <select name='ingredient'>
                         <option value="">Select</option>
                         {% for ingredient in ingredients %}
-                        <option value="{{ingredient.ingredient}}">{{ingredient.ingredient}}</option>
+                        <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
                         {% endfor %}
                     </select></label>
                     <input type="text" name="new_ingredient" placeholder="Add new ingredient">
