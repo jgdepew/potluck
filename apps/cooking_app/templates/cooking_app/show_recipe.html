@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Recipe</title>
+</head>
+<style type="text/css">
+	a:visited {
+		color: black;
+	}
+	#header li{
+		list-style: none;
+		display: inline-block;
+		margin-right: 20px;
+	}
+	#header{
+		display:inline-block;
+		text-align: center;
+		width: 1080px;
+	}
+	#title {
+		font-size: 2em;
+	}
+	#name {
+		font-size: 1.25em;
+		text-decoration: none;
+	}
+	#user_recipe, #saved_recipe{
+		margin-left: 25px
+	}
+</style>
+<body>
+
+	<div id="header">
+		<h1>{{recipe.title}}</h1>
+		<ul>
+			<li><a href="{% url 'potluck:index' %}">Home</a></li>
+			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+		</ul>
+	</div>
+	<div id="info">
+		<p><b>Rating:</b></p>
+		<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
+		<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minutes.ute}} minutes.</p>
+		<p><b>Total Time:</b> hour(s), minutes.</p>
+		<p><b>Steps:</b></p>
+			<ol>
+			{% for step in steps %}
+				<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}</li>
+			{% endfor %}
+			</ol>
+	</div>
+	<div id="ingredient">
+	{% if request.session.id == recipe.creator %}
+		<a href=""><button>Edit this Recipe</button></a>
+	{% endif %}
+	</div>
+	<div id="comments">
+	</div>
+	<form action="{% url 'potluck:show_recipe' recipe_id=recipe.id %}" method="post">
+	{% csrf_token %}
+	<textarea rows="5" cols="25" placeholder="Write a comment..."></textarea>
+	<input type="submit" value="Post">
+	</form>
+
+</body>
+</html>

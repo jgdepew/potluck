@@ -24,17 +24,30 @@
 		font-size: 1.25em;
 		text-decoration: none;
 	}
+	#recipe {
+		margin-left: 25px
+	}
 </style>
 <body>
 	<div id="header">
 		<p>Welcome to <span id="title">potLuck</span>,</p>
-		<p><a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a></p>
+		<p>Hello <a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a>!</p>
 		<ul>
 			<li><a href="{% url 'potluck:index' %}">Home</a></li>
 			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
 			<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
 		</ul>
+	</div>
+	<h2>What's on today's menu?</h2>
+	<div id="recipe">
+		{% for recipe in recipes %}
+			<h3>{{recipe.title}}</h3>
+			<a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
+			<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
+			<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hour(s), {{recipe.cook_time_minute}} minutes.</p>
+			<p><b>Created by:</b> {{recipe.creator.first_name}} {{recipe.creator.last_name}}</p>
+		{% endfor %}
 	</div>
 </body>
 </html>
