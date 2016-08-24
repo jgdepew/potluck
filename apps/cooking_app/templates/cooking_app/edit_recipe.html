@@ -24,6 +24,17 @@
         		font-size: 1.25em;
         		text-decoration: none;
         	}
+            input[type=number]{
+                width: 30px;
+            }
+            input[type=number], input[type=text], textarea{
+                border: none;
+                background-color: #eaeaea;
+                outline-width: medium;
+            }
+            label{
+                vertical-align: top;
+            }
         </style>
     </head>
     <body>
@@ -44,16 +55,17 @@
         <form class="" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post">
             {% csrf_token %}
             <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}"></label><br>
-            <label>Description: <input type="text" name="description" value="{{recipe.description}}"></label><br>
-            <label>Prep Time Hours: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0"></label>
-            <label>Prep Time Minutes: <input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0"></label><br>
-            <label>Cook Time Hours: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"></label>
-            <label>Cook Time Minutes: <input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"></label><br>
+            <label>Prep Time: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0"> hrs </label>
+            <label><input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0"> min</label><br>
+            <label>Cook Time: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"> hrs</label>
+            <label><input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"> min</label><br>
+            <label>Description: <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
             <input type="submit" value="Update Recipe">
         </form>
+        <hr>
         <div id="steps">
+            <h3>Update your steps</h3>
             {% for step in steps %}
-                <!-- grab all stpes here -->
                 <div class="step">
                     <form action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
                         {% csrf_token %}
@@ -67,7 +79,7 @@
                                 {% endif %}
                             {% endfor %}
                         </select></label>
-                        <input type="text" name="new_measurement" placeholder="Add new..">
+                        <input type="text" name="new_measurement" placeholder="Add new measurement">
                         <label>Ingredient: <select name='ingredient'>
                             {% for ingredient in ingredients %}
                                 {% if ingredient ==  step.ingredient %}
@@ -77,16 +89,16 @@
                                 {% endif %}
                             {% endfor %}
                         </select></label>
-                        <input type="text" name="new_ingredient" placeholder="Add new..">
+                        <input type="text" name="new_ingredient" placeholder="Add new ingredient">
                         <label>Description: <input type="text" name="description" value="{{step.description}}"></label>
                         <input type="hidden" name="step_id" value="{{step.id}}">
                         <input type="submit" value="Update Recipe">
                     </form>
                 </div>
             {% endfor %}
-            <!-- show form to add a new step here -->
             <hr>
             <div id="new_step">
+                <h3>Add a Step</h3>
                 <form action="{% url 'potluck:add_step' %}" method="post">
                     {% csrf_token %}
                     <label>Step #{{step_count}} <input type="hidden" name="step_number" value="{{step_count}}"></label>
@@ -96,14 +108,14 @@
                             <option value="{{measurement.measurement}}">{{measurement.measurement}}</option>
                         {% endfor %}
                     </select></label>
-                    <input type="text" name="new_measurement" placeholder="Add new..">
+                    <input type="text" name="new_measurement" placeholder="Add new measurement">
                     <label>Ingredient: <select name='ingredient'>
                         <option value="">Select</option>
                         {% for ingredient in ingredients %}
                         <option value="{{ingredient.ingredient}}">{{ingredient.ingredient}}</option>
                         {% endfor %}
                     </select></label>
-                    <input type="text" name="new_ingredient" placeholder="Add new..">
+                    <input type="text" name="new_ingredient" placeholder="Add new ingredient">
                     <label>Description: <input type="text" name="description"></label>
                     <input type="hidden" name="recipe_id" value="{{recipe.id}}">
                     <input type="submit" value="Add Step">

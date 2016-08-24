@@ -17,14 +17,13 @@ class UserManager(models.Manager):
 		email = request.POST['email']
 		password1 = request.POST['password1']
 		password2 = request.POST['password2']
-
 		if  len(User.objects.all()) < 1:
 			user_level = 9
 		else:
 			user_level = 1
 
 		if len(email)<1:
-			messages.error(request, 'No email entered')
+			messages.error(request, 'No email entered.')
 			errors += 1
 		elif not EMAIL_REGEX.match(email):
 			messages.error(request, 'Not a valid email.')
@@ -34,14 +33,14 @@ class UserManager(models.Manager):
 			errors += 1
 
 		if len(first_name) < 2 or len(first_name) < 2:
-			messages.error(request, 'Name must be longer than 2 characters.')
+			messages.error(request, 'First and last name must be longer than 2 characters.')
 			errors += 1
 
 		if password1 != password2:
 			messages.error(request, 'Passwords do not match.')
 			errors += 1
 		elif len(password1)<8:
-			messages.error(request, 'Not a valid password.')
+			messages.error(request, 'Password must be at least 8 characters.')
 			errors += 1
 
 		if errors > 0:
@@ -54,6 +53,7 @@ class UserManager(models.Manager):
 			request.session['id'] = user.id
 			request.session['user_level'] = user.user_level
 			return True
+
 	def LoginValidation(self, request):
 		if 'first_name' in request.POST:
 			return False
@@ -84,17 +84,29 @@ class RecipeManager(models.Manager):
 		if len(request.POST['description']) < 1:
 			messages.error(request, 'Description must be filled out')
 			no_errors = False
-		if len(request.POST['prep_time_hour']) < 1 and int(request.POST['prep_time_hour']) >= 0:
-			messages.error(request, 'Prep Time Hour must be filled out and be a number greater than 0')
+		if len(request.POST['prep_time_hour']) < 1:
+			messages.error(request, 'Prep Time Hour must be filled out')
 			no_errors = False
-		if len(request.POST['prep_time_minute']) < 1 and int(request.POST['prep_time_minute']) >= 0:
-			messages.error(request, 'Prep Time minute must be filled out and be a number greater than 0')
+		if int(request.POST['prep_time_hour']) >= 0:
+			messages.error(request, 'Prep Time Hour must be a number greater than 0')
 			no_errors = False
-		if len(request.POST['cook_time_hour']) < 1 and int(request.POST['cook_time_hour']) >= 0:
-			messages.error(request, 'Cook Time Hour must be filled out and be a number greater than 0')
+		if len(request.POST['prep_time_minute']) < 1:
+			messages.error(request, 'Prep Time minute must be filled out')
 			no_errors = False
-		if len(request.POST['cook_time_minute']) < 1 and int(request.POST['cook_time_minute']) >= 0:
-			messages.error(request, 'Cook Time minute must be filled out and be a number greater than 0')
+		if int(request.POST['prep_time_minute']) >= 0:
+			messages.error(request, 'Prep Time minute must be a number greater than 0')
+			no_errors = False
+		if len(request.POST['cook_time_hour']) < 1:
+			messages.error(request, 'Cook Time Hour must be filled out')
+			no_errors = False
+		if int(request.POST['cook_time_hour']) >= 0:
+			messages.error(request, 'Cook Time Hour must be a number greater than 0')
+			no_errors = False
+		if len(request.POST['cook_time_minute']) < 1:
+			messages.error(request, 'Cook Time minute must be filled out')
+			no_errors = False
+		if int(request.POST['cook_time_minute']) >= 0:
+			messages.error(request, 'Cook Time minute must be a number greater than 0')
 			no_errors = False
 		return no_errors
 

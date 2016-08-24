@@ -67,9 +67,7 @@ def add_step(request):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
-	#TODO create step
 	step = Step.objects.add_step(request)
-
 	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
@@ -78,14 +76,15 @@ def update_step(request, step_id):
 		return redirect(reverse('potluck:login'))
 
 	#TODO update step
-	return render(request, 'cooking_app/edit_recipe.html', {'recipe': Recipe.objects.get(id=recipe_id), 'steps': Step.objects.get(recipe=Recipe.objects.get(id=recipe_id))})
+	step = Step.objects.update_step(request)
+	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
 def show_user(request, id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
-	#TODO pass in user recipes too!
+	#TODO pass in user and recipes
 
 	return render(request, 'cooking_app/show_user.html', {'user': User.objects.get(id=id)})
 
