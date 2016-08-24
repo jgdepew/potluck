@@ -82,6 +82,14 @@ def edit_recipe(request, recipe_id):
 	return render(request, 'cooking_app/edit_recipe.html', {'user': User.objects.get(id=request.session['id']),'recipe': Recipe.objects.get(id=recipe_id), 'steps':steps, 'step_count': step_count, 'ingredients': Ingredient.objects.all(), 'measurements': Measurement.objects.all()})
 
 
+def delete_recipe(request, recipe_id):
+	if 'id' not in request.session:
+		return redirect(reverse('potluck:login'))
+    # unfinished
+	Recipe.objects.get(id=recipe_id).delete()
+	return redirect('potluck:index')
+
+
 def add_step(request):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
@@ -98,12 +106,11 @@ def update_step(request, step_id):
 	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
-def delete_step(request, step_id, recipe_id):
+def delete_step(request, step_id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
 	Step.objects.get(id=step_id).delete()
-	print 'deleted'
 	return JsonResponse({'to_delete': step_id})
 
 
