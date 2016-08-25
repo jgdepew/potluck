@@ -65,12 +65,17 @@ def show_recipe(request, recipe_id):
 		image = RecipePic.objects.get(recipe=Recipe.objects.get(id=recipe_id))
 	else:
 		image = []
+	recipe = Recipe.objects.get(id=recipe_id)
+	total_time_hour = recipe.prep_time_hour + recipe.cook_time_hour
+	total_time_minute = recipe.prep_time_minute + recipe.cook_time_minute
 	context = {
 	'user': User.objects.get(id=request.session['id']),
 	'recipe': Recipe.objects.get(id=recipe_id),
 	'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	'image': image,
 	'avg_rating': avg_rating,
+	'total_time_hour': total_time_hour,
+	'total_time_minute': total_time_minute,
 	'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
