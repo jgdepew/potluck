@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>potluck</title>
+	<title>Search</title>
 </head>
 <style type="text/css">
 	a:visited {
@@ -32,6 +32,7 @@
 	}
 </style>
 <body>
+
 	<div id="header">
 		<p>Welcome to <span id="title">potLuck</span>,</p>
 		<p>Hello <a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a>!</p>
@@ -39,24 +40,36 @@
 			<li><a href="{% url 'potluck:index' %}">Home</a></li>
 			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
 			<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-			<li><a href="{% url 'potluck:search' %}">Search</a></li>
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+			<li><a href="{% url 'potluck:search' %}">Search</a></li>
 		</ul>
 	</div>
-	<h2>What's on today's menu?</h2>
-	<div id="recipe">
-		{% for recipe in recipes %}
+	<div id="searchbar">
+		<h3>Search By Title or Description</h3>
+		<form method="post" action="{% url 'potluck:search' %}">
+			{% csrf_token %}
+			<input type="text" name="search" placeholder="Search...">
+			<input type="submit" value="Search">
+		</form>
+	</div>
+	{% if keyword != '' %}
+	<p>Showing results filtered by keyword "{{keyword}}"...</p>
+	{% endif %}
+	<div id="recipe_results">
+		{% for recipe in results %}
 			<h3>{{recipe.title}}</h3>
 			{% for image in images %}
 				{% if image.recipe == recipe %}
 					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
 				{% endif %}
 			{% endfor %}
-			<div class='recipe_info'>
-				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
-				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hour(s), {{recipe.cook_time_minute}} minutes.</p>
-				<p><b>Created by: </b><a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
-				<a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
+			<div class="user_recipe_info">
+				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+				{% if request.session.id == recipe.creator.id %}
+				<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+				{% endif %}
 			</div>
 			<br>
 			<hr>
