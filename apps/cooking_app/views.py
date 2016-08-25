@@ -37,9 +37,9 @@ def index(request):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 	context ={
-	'user': User.objects.get(id=request.session['id']),
-	'recipes': Recipe.objects.all(),
-	'images': RecipePic.objects.all(),
+		'user': User.objects.get(id=request.session['id']),
+		'recipes': Recipe.objects.all(),
+		'images': RecipePic.objects.all()
 	}
 	return render(request, 'cooking_app/index.html', context)
 
@@ -67,14 +67,15 @@ def show_recipe(request, recipe_id):
 	total_time_hour = recipe.prep_time_hour + recipe.cook_time_hour
 	total_time_minute = recipe.prep_time_minute + recipe.cook_time_minute
 	context = {
-	'user': User.objects.get(id=request.session['id']),
-	'recipe': Recipe.objects.get(id=recipe_id),
-	'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
-	'image': image,
-	'avg_rating': avg_rating,
-	'total_time_hour': total_time_hour,
-	'total_time_minute': total_time_minute,
-	'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
+		'user': User.objects.get(id=request.session['id']),
+		'recipe': Recipe.objects.get(id=recipe_id),
+		'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
+		'image': image,
+		'avg_rating': avg_rating,
+		'total_time_hour': total_time_hour,
+		'total_time_minute': total_time_minute,
+		'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
+		'images': RecipePic.objects.all()
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
@@ -120,7 +121,8 @@ def edit_recipe(request, recipe_id):
 		'recipe': Recipe.objects.get(id=recipe_id),
 		'steps':steps, 'step_count': step_count,
 		'ingredients': Ingredient.objects.all(),
-		'measurements': Measurement.objects.all()
+		'measurements': Measurement.objects.all(),
+		'images': RecipePic.objects.all(),
 	}
 	return render(request, 'cooking_app/edit_recipe.html', context)
 
@@ -161,11 +163,13 @@ def show_user(request, id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
 
-	#TODO pass in user and recipes related to user
 	context = {
-	'user': User.objects.get(id=id),
-	'recipes': Recipe.objects.filter(creator=User.objects.get(id=id)),
-	'saves': Recipe.objects.filter(user=User.objects.get(id=id)),
+		'self': User.objects.get(id=request.session['id']),
+		'user': User.objects.get(id=id),
+		'recipes': Recipe.objects.filter(creator=User.objects.get(id=id)),
+		'saves': Recipe.objects.filter(user=User.objects.get(id=id)),
+		'images': RecipePic.objects.all(),
+		# grab prof pic
 	}
 	return render(request, 'cooking_app/show_user.html', context)
 
@@ -183,8 +187,8 @@ def upload(request):
 			RecipePic.objects.create(title=request.POST['title'], image=request.FILES['file'], recipe=Recipe.objects.get(id=2))
 
 	context = {
-	"form": PicsForm(),
-	'images': RecipePic.objects.all()
+		"form": PicsForm(),
+		'images': RecipePic.objects.all()
 	}
 	return render(request, 'cooking_app/uploadPic.html',context)
 
