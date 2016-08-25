@@ -39,7 +39,26 @@
 		</ul>
 	</div>
 	<div id="info">
-		<p><b>Rating:</b></p>
+
+		{% if avg_rating == 'No ratings yet.' %}
+			<p><b>{{avg_rating}}<b></p>
+		{% else %}
+			<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
+		{% endif %}
+
+		{% if request.session.id != recipe.creator.id %}
+			<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post">
+	        {% csrf_token %}
+	            <select name="rating">
+	                <option value='1'>1</option>
+	                <option value='2'>2</option>
+	                <option value='3'>3</option>
+	                <option value='4'>4</option>
+	                <option value='5'>5</option>
+	            </select>
+	            <input type="submit" value="Rate Meal">
+	        </form>
+	    {% endif %}
 		<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 		<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minutes.ute}} minutes.</p>
 		<p><b>Total Time:</b> hour(s), minutes.</p>
