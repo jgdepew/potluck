@@ -190,6 +190,7 @@ class Recipe(models.Model):
 class RecipePic(models.Model):
 	title = models.CharField(max_length=50)
 	image = models.ImageField(upload_to='FoodPics')
+	recipe = models.OneToOneField('Recipe', on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
