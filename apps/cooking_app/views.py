@@ -56,7 +56,7 @@ def show_recipe(request, recipe_id):
 	'user': User.objects.get(id=request.session['id']),
 	'recipe': Recipe.objects.get(id=recipe_id),
 	'steps': Step.objects.filter(recipe=recipe_id),
-	'comments': Comment.objects.all()
+	'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id))
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
