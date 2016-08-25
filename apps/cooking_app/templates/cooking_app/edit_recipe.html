@@ -99,8 +99,14 @@
                 <label>Description: <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
                 <input type="submit" value="Update Recipe">
             </form>
+            <!-- add form to update food pic -->
             <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button>Delete Recipe</button></a>
         </div>
+        <form enctype="multipart/form-data" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}" method="post">
+			{% csrf_token %}
+			<label>Change Image: <input type="file" name="image"></label><br>
+			<input type="submit" value="Update Image">
+		</form>
         <hr>
         <div id="steps">
             <h3>Update your steps</h3>

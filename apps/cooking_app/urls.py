@@ -17,5 +17,4 @@ urlpatterns = [
     url(r'^save_recipe(?P<recipe_id>\d+)$', views.save_recipe, name='save_recipe'),
     url(r'^update_step/(?P<step_id>\d+)$', views.update_step, name='update_step'),
     url(r'^delete_step/(?P<step_id>\d+)$', views.delete_step, name='delete_step'),
-    url(r'^upload$', views.upload, name='upload'),
 ]

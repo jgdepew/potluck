@@ -158,7 +158,27 @@ class RatingManager(models.Manager):
 		rating = form_info['rating']
 		recipe = Recipe.objects.get(id=id)
 		user = User.objects.get(id=user_id)
-		Rating.objects.create(recipe=recipe, user=user, rating=rating)		
+		Rating.objects.create(recipe=recipe, user=user, rating=rating)
+
+class UserPicManager(models.Manager):
+	def pic(self, post, files, user_id):
+		if len(UserPic.objects.filter(user=User.objects.get(id=user_id))) > 0:
+			pic = UserPic.objects.get(user=User.objects.get(id=user_id))
+			pic.image = files['image']
+			pic.save()
+			return pic
+		else:
+			return UserPic.objects.create(user=User.objects.get(id=user_id), image=files['image'])
+
+class RecipePicManager(models.Manager):
+	def update(self, recipe_id, files):
+		if len(RecipePic.objects.filter(recipe=Recipe.objects.get(id=recipe_id))) > 0:
+			pic = RecipePic.objects.get(recipe=Recipe.objects.get(id=recipe_id))
+			pic.image = files['image']
+			pic.save()
+			return pic
+		else:
+			return RecipePic.objects.create(title=Recipe.objects.get(id=recipe_id).title, recipe=Recipe.objects.get(id=recipe_id), image=files['image'])
 
 
 
@@ -174,6 +194,13 @@ class User(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	objects = UserManager()
+
+class UserPic(models.Model):
+	image = models.ImageField(upload_to='UserPics')
+	user = models.OneToOneField('User', on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	objects = UserPicManager()
 
 class Comment(models.Model):
 	comment = models.TextField()
@@ -201,6 +228,7 @@ class RecipePic(models.Model):
 	recipe = models.OneToOneField('Recipe', on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
+	objects = RecipePicManager()
 
 class Ingredient(models.Model):
 	ingredient = models.CharField(max_length=255)

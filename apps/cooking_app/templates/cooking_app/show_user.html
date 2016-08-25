@@ -41,12 +41,18 @@
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
 		</ul>
 	</div>
+	<h2>{{user.first_name}} {{user.last_name}}</h2> <br>
+	{% if not user_pic == '' %}
+		<img style="width: auto; height: 150px;" src="/{{user_pic.image.url}}">
+	{% else %}
+		<p style="font-size: 10px; ">No profile picture</p>
+	{% endif %}
 	<h2>{{user.first_name}}'s Recipes</h2>
 	{% if user == self %}
-		<form enctype="multipart/form-data" action="{% url 'potluck:add_recipe' %}" method="post">
+		<form enctype="multipart/form-data" action="{% url 'potluck:show_user' id=user.id %}" method="post">
 			{% csrf_token %}
 			<label>Profile Pic: <input type="file" name="image"></label><br>
-			<input type="submit" value="Add Recipe">
+			<input type="submit" value="Add Profile Pic">
 		</form>
 	{% endif %}
 	<div id="user_recipe">
@@ -75,7 +81,7 @@
 				{% if image.recipe == recipe %}
 					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
 				{% endif %}
-			{% endfor %}			
+			{% endfor %}
 			<div class="user_recipe_info">
 				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
 				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
