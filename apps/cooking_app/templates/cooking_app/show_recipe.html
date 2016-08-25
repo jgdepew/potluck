@@ -42,9 +42,7 @@
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
 		</ul>
 	</div>
-	{% if image %}
-		<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
-	{% endif %}
+	
 	<div id="info">
 
 		{% if avg_rating == 'No ratings yet.' %}
@@ -67,7 +65,7 @@
 	        </form>
 	    {% endif %}
 		<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
-		<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minutes.ute}} minutes.</p>
+		<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>
 		<p><b>Total Time:</b> hour(s), minutes.</p>
 	</div>
 	<p><b>Steps:</b></p>
