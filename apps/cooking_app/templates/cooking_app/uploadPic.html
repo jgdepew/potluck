@@ -8,13 +8,13 @@
     <h1>File uploader</h1>
     <form enctype="multipart/form-data" action="{% url 'potluck:upload' %}" method="post">
       {% csrf_token %}
-      <li>
-      {{form.as_ul}}
-      </li>
+      {{form}}
       {# #}
       <input type="submit" value="Upload File">
     </form>
     {% for image in images %}
+      {{image.recipe.creator.first_name}}'s
+      
       {{image.title}}
       <img style="width: auto; height: 150px;"src="{{image.image.url}}">
       <br>
