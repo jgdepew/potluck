@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^add_step$', views.add_step, name='add_step'),
     url(r'^update_step/(?P<step_id>\d+)$', views.update_step, name='update_step'),
     url(r'^delete_step/(?P<step_id>\d+)$', views.delete_step, name='delete_step'),
+    url(r'^upload$', views.upload, name='upload'),
 ]

@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, reverse
-from .models import User, Comment, Recipe, Ingredient, Measurement, Step
+from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic
 from django.contrib import messages
 import datetime
 from django.http import JsonResponse
+from .forms import PicsForm
+
 
 # Create your views here.
 def login(request):
@@ -141,6 +143,17 @@ def logout(request):
 	return redirect(reverse('potluck:login'))
 
 
+def upload(request):
+	if request.method == 'POST':
+		form = PicsForm(request.POST, request.FILES)
+		if form.is_valid():
+			RecipePic.objects.create(title=request.POST['title'], image=request.FILES['file'])
+
+	context = {
+	"form": PicsForm(),
+	'images': RecipePic.objects.all()
+	}
+	return render(request, 'cooking_app/uploadPic.html',context)
 
 
 

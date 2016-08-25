@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1>File uploader</h1>
+    <form enctype="multipart/form-data" action="{% url 'potluck:upload' %}" method="post">
+      {% csrf_token %}
+      <li>
+      {{form.as_ul}}
+      </li>
+      {# #}
+      <input type="submit" value="Upload File">
+    </form>
+    {% for image in images %}
+      {{image.title}}
+      <img style="width: auto; height: 150px;"src="{{image.image.url}}">
+      <br>
+    {% endfor %}
+  </body>
+</html>
+
+
+
+
+
+
+<!--  -->
