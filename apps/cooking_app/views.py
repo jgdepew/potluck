@@ -50,11 +50,13 @@ def show_recipe(request, recipe_id):
 		return redirect(reverse('potluck:login'))
 
 	if request.method == 'POST':
-		return redirect(reverse('potluck:create'))
+		post = Comment.objects.create(comment=request.POST['comment'], user=User.objects.get(id=request.session['id']), recipe=Recipe.objects.get(id=recipe_id))
+		return redirect(reverse('potluck:show_recipe', kwargs={'recipe_id':recipe_id}))
 	context = {
 	'user': User.objects.get(id=request.session['id']),
 	'recipe': Recipe.objects.get(id=recipe_id),
-	'steps': Step.objects.filter(recipe=recipe_id)
+	'steps': Step.objects.filter(recipe=recipe_id),
+	'comments': Comment.objects.all()
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
@@ -154,6 +156,13 @@ def upload(request):
 	'images': RecipePic.objects.all()
 	}
 	return render(request, 'cooking_app/uploadPic.html',context)
+
+def post_comment(request, recipe_id):
+	# comment = request.POST.get('comment')
+	print request.POST
+	print 
+	post = Comment.objects.create(comment=request.POST['comment'], user=User.objects.get(id=request.session['id']), recipe=Recipe.objects.get(id=recipe_id))
+	return redirect(reverse('potluck:show_recipe', kwargs={'recipe_id':recipe_id}))
 
 
 

@@ -46,7 +46,7 @@
 		<p><b>Steps:</b></p>
 			<ol>
 			{% for step in steps %}
-				<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}</li>
+				<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
 			{% endfor %}
 			</ol>
 	</div>
@@ -56,13 +56,15 @@
 	{% endif %}
 	</div>
 	<div id="comments">
+	{% for comment in comments %}
 		<p>{{comment.created_at}}: {{ comment.user.first_name }} wrote... </p>
 		<br>
 		<p>{{ comment.comment }}</p>
+	{% endfor %}
 	</div>
 	<form action="{% url 'potluck:show_recipe' recipe_id=recipe.id %}" method="post">
 	{% csrf_token %}
-	<textarea rows="5" cols="25" placeholder="Write a comment..."></textarea>
+	<textarea name='comment' rows="5" cols="25" placeholder="Write a comment..."></textarea>
 	<input type="submit" value="Post">
 	</form>
 
