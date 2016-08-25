@@ -41,7 +41,7 @@ def index(request):
 	context ={
 	'user': User.objects.get(id=request.session['id']),
 	'recipes': Recipe.objects.all(),
-	'images': RecipePic.objects.all()
+	'images': RecipePic.objects.all(),
 	}
 	return render(request, 'cooking_app/index.html', context)
 
