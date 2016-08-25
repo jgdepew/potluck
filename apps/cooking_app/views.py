@@ -50,7 +50,8 @@ def show_recipe(request, recipe_id):
 		return redirect(reverse('potluck:login'))
 
 	if request.method == 'POST':
-		return redirect(reverse('potluck:create'))
+
+		post = Comment.objects.create(comment=request.POST['comment'], user=User.objects.get(id=request.session['id']), recipe=Recipe.objects.get(id=recipe_id))
 	ratings = Rating.objects.filter(recipe=recipe_id)
 	print ratings
 	sum_rating = 0.
@@ -70,6 +71,7 @@ def show_recipe(request, recipe_id):
 	'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	'image': image,
 	'avg_rating': avg_rating,
+	'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id),
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
