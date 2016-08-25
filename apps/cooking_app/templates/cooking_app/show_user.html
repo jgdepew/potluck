@@ -15,7 +15,7 @@
 	#header{
 		display:inline-block;
 		text-align: center;
-		width: 1080px;
+		width: 100%;
 	}
 	#title {
 		font-size: 2em;
@@ -26,6 +26,9 @@
 	}
 	#user_recipe, #saved_recipe{
 		margin-left: 25px
+	}
+	.user_recipe_info{
+		display: inline-block;
 	}
 </style>
 <body>
@@ -38,23 +41,48 @@
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
 		</ul>
 	</div>
-	<h2>User's Recipes</h2>
+	<h2>{{user.first_name}}'s Recipes</h2>
+	{% if user == self %}
+		<form enctype="multipart/form-data" action="{% url 'potluck:add_recipe' %}" method="post">
+			{% csrf_token %}
+			<label>Profile Pic: <input type="file" name="image"></label><br>
+			<input type="submit" value="Add Recipe">
+		</form>
+	{% endif %}
 	<div id="user_recipe">
 		{% for recipe in recipes %}
 			<h3>{{recipe.title}}</h3>
-			<a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
-			<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
-			<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
-			<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+			{% for image in images %}
+				{% if image.recipe == recipe %}
+					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+				{% endif %}
+			{% endfor %}
+			<div class="user_recipe_info">
+				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+				<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+			</div>
+			<br>
+			<hr>
 		{% endfor %}
 	</div>
 	<h2>Saved Recipes</h2>
 	<div id="saved_recipe">
 		{% for recipe in saves %}
 			<h3>{{recipe.title}}</h3>
-			<a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
-			<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
-			<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+			{% for image in images %}
+				{% if image.recipe == recipe %}
+					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+				{% endif %}
+			{% endfor %}			
+			<div class="user_recipe_info">
+				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+				<p><b>Created By:</b> <a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
+				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+			</div>
+			<hr>
 		{% endfor %}
 	</div>
 </body>

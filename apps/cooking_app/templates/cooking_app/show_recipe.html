@@ -15,7 +15,7 @@
 	#header{
 		display:inline-block;
 		text-align: center;
-		width: 1400px;
+		width: 100%;
 	}
 	#title {
 		font-size: 2em;
@@ -27,7 +27,7 @@
 	#user_recipe, #saved_recipe{
 		margin-left: 25px
 	}
-	img, #info{
+	img, .info{
 		display: inline-block;
 	}
 </style>
@@ -42,32 +42,36 @@
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
 		</ul>
 	</div>
-	
 	<div id="info">
-
-		{% if avg_rating == 'No ratings yet.' %}
-			<p><b>{{avg_rating}}</b></p>
-		{% else %}
-			<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
-		{% endif %}
-
-		{% if request.session.id != recipe.creator.id and rating %}
-			<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post">
-	        {% csrf_token %}
-	            <select name="rating">
-	                <option value='1'>1</option>
-	                <option value='2'>2</option>
-	                <option value='3'>3</option>
-	                <option value='4'>4</option>
-	                <option value='5'>5</option>
-	            </select>
-	            <input type="submit" value="Rate Meal">
-	        </form>
-	    {% endif %}
-	    <p><a href="{% url 'potluck:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
-		<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
-		<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>
-		<p><b>Total Time:</b> {{total_time_hour}} hour(s), {{total_time_minute}} minutes.</p>
+		{% for image in images %}
+			{% if image.recipe == recipe %}
+				<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+			{% endif %}
+		{% endfor %}
+		<div class="info">
+			{% if avg_rating == 'No ratings yet.' %}
+				<p><b>{{avg_rating}}</b></p>
+			{% else %}
+				<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
+			{% endif %}
+			{% if request.session.id != recipe.creator.id and rating %}
+				<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post">
+		        {% csrf_token %}
+		            <select name="rating">
+		                <option value='1'>1</option>
+		                <option value='2'>2</option>
+		                <option value='3'>3</option>
+		                <option value='4'>4</option>
+		                <option value='5'>5</option>
+		            </select>
+		            <input type="submit" value="Rate Meal">
+		        </form>
+		    {% endif %}
+	   		<p><a href="{% url 'potluck:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
+			<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
+			<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>
+			<p><b>Total Time:</b> {{total_time_hour}} hour(s), {{total_time_minute}} minutes.</p>
+		</div>
 	</div>
 	<p><b>Steps:</b></p>
 	<ol>

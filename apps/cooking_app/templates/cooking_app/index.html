@@ -15,7 +15,7 @@
 	#header{
 		display:inline-block;
 		text-align: center;
-		width: 1080px;
+		width: 100%;
 	}
 	#title {
 		font-size: 2em;
@@ -27,7 +27,7 @@
 	#recipe {
 		margin-left: 25px
 	}
-	#recipe_info, #recipe img{
+	.recipe_info, #recipe img{
 		display: inline-block;
 	}
 </style>
@@ -44,19 +44,20 @@
 	<h2>What's on today's menu?</h2>
 	<div id="recipe">
 		{% for recipe in recipes %}
+			<h3>{{recipe.title}}</h3>
 			{% for image in images %}
 				{% if image.recipe == recipe %}
 					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
 				{% endif %}
 			{% endfor %}
-			<div id='recipe_info'>
-				<h3>{{recipe.title}}</h3>
-				<a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
+			<div class='recipe_info'>
 				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hour(s), {{recipe.cook_time_minute}} minutes.</p>
-				<p><b>Created by:</b> <a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
+				<p><b>Created by:</b><a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
+				<a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
 			</div>
 			<br>
+			<hr>
 		{% endfor %}
 	</div>
 </body>

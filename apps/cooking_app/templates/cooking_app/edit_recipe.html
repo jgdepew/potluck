@@ -18,7 +18,7 @@
         	#header{
         		display:inline-block;
         		text-align: center;
-        		width: 1080px;
+        		width: 100%;
         	}
         	#title {
         		font-size: 2em;
@@ -37,6 +37,9 @@
             }
             label, select, input{
                 vertical-align: top;
+            }
+            img, #update_recipe{
+                display: inline-block;
             }
         </style>
         <script>
@@ -80,17 +83,24 @@
                 <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
             {% endfor %}
         {% endif %}
-        <form id="update_recipe" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post">
-            {% csrf_token %}
-            <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}"></label><br>
-            <label>Prep Time: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0"> hrs </label>
-            <label><input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0"> min</label><br>
-            <label>Cook Time: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"> hrs</label>
-            <label><input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"> min</label><br>
-            <label>Description: <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
-            <input type="submit" value="Update Recipe">
-        </form>
-        <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button>Delete Recipe</button></a>
+        {% for image in images %}
+			{% if image.recipe == recipe %}
+				<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+			{% endif %}
+		{% endfor %}
+        <div id="update_recipe">
+            <form action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post">
+                {% csrf_token %}
+                <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}"></label><br>
+                <label>Prep Time: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0"> hrs </label>
+                <label><input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0"> min</label><br>
+                <label>Cook Time: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"> hrs</label>
+                <label><input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"> min</label><br>
+                <label>Description: <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
+                <input type="submit" value="Update Recipe">
+            </form>
+            <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button>Delete Recipe</button></a>
+        </div>
         <hr>
         <div id="steps">
             <h3>Update your steps</h3>
