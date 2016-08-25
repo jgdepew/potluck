@@ -102,6 +102,7 @@ class RecipeManager(models.Manager):
 		recipe.cook_time_minute = form_info['cook_time_minute']
 		recipe.save()
 
+
 class StepManager(models.Manager):
 	def add_step(self, form_info):
 		measurement = self.find_measurement(form_info)
