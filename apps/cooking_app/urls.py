@@ -10,8 +10,9 @@ urlpatterns = [
     url(r'^user/(?P<id>\d+)$', views.show_user, name='show_user'),
     url(r'^recipe/(?P<recipe_id>\d+)$', views.show_recipe, name='show_recipe'),
     url(r'^add_recipe$', views.add_recipe, name='add_recipe'),
+    url(r'^delete_recipe/(?P<recipe_id>\d+)$', views.delete_recipe, name='delete_recipe'),
     url(r'^edit_recipe/(?P<recipe_id>\d+)$', views.edit_recipe, name='edit_recipe'),
     url(r'^add_step$', views.add_step, name='add_step'),
     url(r'^update_step/(?P<step_id>\d+)$', views.update_step, name='update_step'),
-    url(r'^delete_step/(?P<step_id>\d+)/(?P<recipe_id>\d+)$', views.delete_step, name='delete_step'),
+    url(r'^delete_step/(?P<step_id>\d+)$', views.delete_step, name='delete_step'),
 ]

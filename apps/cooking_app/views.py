@@ -94,7 +94,7 @@ def edit_recipe(request, recipe_id):
 def delete_recipe(request, recipe_id):
 	if 'id' not in request.session:
 		return redirect(reverse('potluck:login'))
-    # unfinished
+
 	Recipe.objects.get(id=recipe_id).delete()
 	return redirect('potluck:index')
 
