@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic
+from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic, Rating
 from django.contrib import messages
 import datetime
 from django.http import JsonResponse
@@ -51,11 +51,21 @@ def show_recipe(request, recipe_id):
 
 	if request.method == 'POST':
 		return redirect(reverse('potluck:create'))
+	ratings = Rating.objects.filter(recipe=recipe_id)
+	print ratings
+	sum_rating = 0.
+	if len(ratings)>0:
+		for rating in ratings:
+			sum_rating += rating.rating
+		avg_rating = sum_rating / len(ratings)
+	else:
+		avg_rating = 'No ratings yet.'
 	context = {
 	'user': User.objects.get(id=request.session['id']),
 	'recipe': Recipe.objects.get(id=recipe_id),
 	'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	'image': RecipePic.objects.get(recipe=Recipe.objects.get(id=recipe_id))
+	'avg_rating': avg_rating,
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
@@ -170,10 +180,10 @@ def upload(request):
 	}
 	return render(request, 'cooking_app/uploadPic.html',context)
 
+def add_rating(request, recipe_id):
+	user_id = request.session['id']
+	Rating.objects.add_rating(recipe_id, user_id, request.POST)
+	return redirect(reverse('potluck:show_recipe', kwargs={'recipe_id':recipe_id}))
 
 
 
-
-
-
-#

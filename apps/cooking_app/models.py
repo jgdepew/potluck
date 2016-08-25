@@ -152,6 +152,12 @@ class StepManager(models.Manager):
 				ingredient = Ingredient.objects.create(ingredient=form_info['new_ingredient'])
 		return ingredient
 
+class RatingManager(models.Manager):
+	def add_rating(self, id, user_id, form_info):
+		rating = form_info['rating']
+		recipe = Recipe.objects.get(id=id)
+		user = User.objects.get(id=user_id)
+		Rating.objects.create(recipe=recipe, user=user, rating=rating)		
 
 
 
@@ -220,8 +226,7 @@ class Rating(models.Model):
 	rating = models.IntegerField()
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
-
-
+	objects = RatingManager()
 
 
 
