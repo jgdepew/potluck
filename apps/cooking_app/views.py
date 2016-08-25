@@ -38,8 +38,8 @@ def index(request):
 		return redirect(reverse('potluck:login'))
 	context ={
 	'user': User.objects.get(id=request.session['id']),
-	'recipes': Recipe.objects.all(),
-	'images': RecipePic.objects.all(),
+	'recipes': Recipe.objects.all().order_by('-updated_at'),
+	'images': RecipePic.objects.all().order_by('-updated_at'),
 	}
 	return render(request, 'cooking_app/index.html', context)
 
@@ -66,6 +66,12 @@ def show_recipe(request, recipe_id):
 	recipe = Recipe.objects.get(id=recipe_id)
 	total_time_hour = recipe.prep_time_hour + recipe.cook_time_hour
 	total_time_minute = recipe.prep_time_minute + recipe.cook_time_minute
+
+	if len(Rating.objects.filter(user=request.session['id'], recipe=recipe_id))>0:
+		rating = False
+	else:
+		rating = True
+
 	context = {
 	'user': User.objects.get(id=request.session['id']),
 	'recipe': Recipe.objects.get(id=recipe_id),
@@ -75,7 +81,9 @@ def show_recipe(request, recipe_id):
 	'total_time_hour': total_time_hour,
 	'total_time_minute': total_time_minute,
 	'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
+	'rating': rating,
 	}
+	print Rating.objects.filter(user=request.session['id'])
 	return render(request, 'cooking_app/show_recipe.html', context)
 
 
