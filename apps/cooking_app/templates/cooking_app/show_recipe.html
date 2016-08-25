@@ -56,6 +56,9 @@
 	{% endif %}
 	</div>
 	<div id="comments">
+		<p>{{comment.created_at}}: {{ comment.user.first_name }} wrote... </p>
+		<br>
+		<p>{{ comment.comment }}</p>
 	</div>
 	<form action="{% url 'potluck:show_recipe' recipe_id=recipe.id %}" method="post">
 	{% csrf_token %}

@@ -169,8 +169,9 @@ class User(models.Model):
 	objects = UserManager()
 
 class Comment(models.Model):
-	comment = models.CharField(max_length=255)
+	comment = models.TextField()
 	user = models.ForeignKey('User')
+	recipe = models.ForeignKey('Recipe')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
@@ -211,6 +212,13 @@ class Step(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	objects = StepManager()
+
+class Rating(models.Model):
+	recipe = models.ForeignKey('Recipe')
+	user = models.ForeignKey('User')
+	rating = models.IntegerField()
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 
 
