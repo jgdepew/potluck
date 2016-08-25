@@ -187,6 +187,12 @@ class Recipe(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	objects = RecipeManager()
 
+class RecipePic(models.Model):
+	title = models.CharField(max_length=50)
+	image = models.ImageField(upload_to='FoodPics')
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
 class Ingredient(models.Model):
 	ingredient = models.CharField(max_length=255)
 	created_at = models.DateTimeField(auto_now_add=True)
