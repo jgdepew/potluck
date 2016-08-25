@@ -73,9 +73,11 @@
     		<p>Welcome to <span id="title">potLuck</span>,</p>
     		<p><a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a></p>
     		<ul>
-    			<li><a href="{% url 'potluck:index' %}">Home</a></li>
-    			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-    			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+                <li><a href="{% url 'potluck:index' %}">Home</a></li>
+                <li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+                <li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
+                <li><a href="{% url 'potluck:search' %}">Search</a></li>
+                <li><a href="{% url 'potluck:logout' %}">Logout</a></li>
     		</ul>
     	</div>
         {% if messages %}

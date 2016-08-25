@@ -4,6 +4,7 @@ from django.contrib import messages
 import datetime
 from django.http import JsonResponse
 from .forms import PicsForm
+from django.db.models import Q
 
 
 # Create your views here.
@@ -222,9 +223,30 @@ def save_recipe(request, recipe_id):
 	return redirect(reverse('potluck:show_recipe', kwargs={'recipe_id':recipe_id}))
 
 
+def search(request):
+	if request.method == 'POST':
+		search = request.POST['search']
+		print search
+		results = Recipe.objects.filter(Q(title__icontains=search))
+		print results
+	else:
+		results = []
+		search = ''
+	context = {
+		'results': results,
+		'images': RecipePic.objects.all(),
+		'keyword': search,
+		'user': User.objects.get(id=request.session['id']),
+	}
+	return render(request, 'cooking_app/search.html', context)
 
 
 
 
 
-	#
+
+
+
+
+
+# 
