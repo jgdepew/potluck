@@ -71,7 +71,7 @@ def show_recipe(request, recipe_id):
 	'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	'image': image,
 	'avg_rating': avg_rating,
-	'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id),
+	'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
