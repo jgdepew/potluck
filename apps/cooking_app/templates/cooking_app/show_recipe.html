@@ -15,7 +15,7 @@
 	#header{
 		display:inline-block;
 		text-align: center;
-		width: 1080px;
+		width: 1400px;
 	}
 	#title {
 		font-size: 2em;
@@ -42,7 +42,9 @@
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
 		</ul>
 	</div>
-	<img style="width: auto; height: 120px;" src="/{{image.image.url}}">
+	{% if image %}
+		<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+	{% endif %}
 	<div id="info">
 
 		{% if avg_rating == 'No ratings yet.' %}
@@ -67,13 +69,14 @@
 		<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 		<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minutes.ute}} minutes.</p>
 		<p><b>Total Time:</b> hour(s), minutes.</p>
-		<p><b>Steps:</b></p>
-			<ol>
-			{% for step in steps %}
-				<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
-			{% endfor %}
-			</ol>
 	</div>
+	<p><b>Steps:</b></p>
+	<ol>
+		{% for step in steps %}
+		<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
+		{% endfor %}
+	</ol>
+	<hr>
 	<div id="ingredient">
 	{% if request.session.id == recipe.creator %}
 		<a href=""><button>Edit this Recipe</button></a>
