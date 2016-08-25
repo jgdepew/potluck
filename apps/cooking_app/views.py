@@ -226,9 +226,10 @@ def save_recipe(request, recipe_id):
 def search(request):
 	if request.method == 'POST':
 		search = request.POST['search']
-		print search
-		results = Recipe.objects.filter(Q(title__icontains=search))
-		print results
+		if search == '':
+			results = []
+		else:
+			results = Recipe.objects.filter(Q(title__icontains=search) | Q(description__icontains=search))
 	else:
 		results = []
 		search = ''
