@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic
+from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic, Rating
 from django.contrib import messages
 import datetime
 from django.http import JsonResponse
@@ -51,10 +51,21 @@ def show_recipe(request, recipe_id):
 
 	if request.method == 'POST':
 		return redirect(reverse('potluck:create'))
+	ratings = Rating.objects.filter(recipe=recipe_id)
+	print ratings
+	sum_rating = 0.
+	if len(ratings)>0:
+		for rating in ratings:
+			sum_rating += rating.rating
+		avg_rating = sum_rating / len(ratings)
+	else:
+		avg_rating = 'No ratings yet.'
 	context = {
 	'user': User.objects.get(id=request.session['id']),
 	'recipe': Recipe.objects.get(id=recipe_id),
-	'steps': Step.objects.filter(recipe=recipe_id)
+	'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
+	'image': RecipePic.objects.get(recipe=Recipe.objects.get(id=recipe_id)),
+	'avg_rating': avg_rating,
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
@@ -68,6 +79,11 @@ def add_recipe(request):
 			return redirect(reverse('potluck:add_recipe'))
 		#create the recipe if validations passed
 		recipe = Recipe.objects.create(title=request.POST['title'], creator=User.objects.get(id=request.session['id']), description=request.POST['description'], prep_time_hour=request.POST['prep_time_hour'], prep_time_minute=request.POST['prep_time_minute'], cook_time_hour=request.POST['cook_time_hour'], cook_time_minute=request.POST['cook_time_minute'])
+		#add image
+		print request.FILES
+		if 'image' in request.FILES:
+			RecipePic.objects.create(title=request.POST['title'], image=request.FILES['image'], recipe=recipe)
+			# RecipePic.objects.create(title=request.POST['title'], image=request.FILES['file'])
 		#redirect to edit page so user can add steps to recipe
 		return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': recipe.id}))
 	return render(request, 'cooking_app/add_recipe.html', {'user': User.objects.get(id=request.session['id'])})
@@ -90,7 +106,15 @@ def edit_recipe(request, recipe_id):
 	else: # otherwise, pass empty list rather than none (so traversing in the template doesnt cause an error)
 		steps = []
 		step_count = 1
-	return render(request, 'cooking_app/edit_recipe.html', {'user': User.objects.get(id=request.session['id']),'recipe': Recipe.objects.get(id=recipe_id), 'steps':steps, 'step_count': step_count, 'ingredients': Ingredient.objects.all(), 'measurements': Measurement.objects.all()})
+
+	context = {
+		'user': User.objects.get(id=request.session['id']),
+		'recipe': Recipe.objects.get(id=recipe_id),
+		'steps':steps, 'step_count': step_count,
+		'ingredients': Ingredient.objects.all(),
+		'measurements': Measurement.objects.all()
+	}
+	return render(request, 'cooking_app/edit_recipe.html', context)
 
 
 def delete_recipe(request, recipe_id):
@@ -146,8 +170,9 @@ def logout(request):
 def upload(request):
 	if request.method == 'POST':
 		form = PicsForm(request.POST, request.FILES)
+		print request.FILES
 		if form.is_valid():
-			RecipePic.objects.create(title=request.POST['title'], image=request.FILES['file'])
+			RecipePic.objects.create(title=request.POST['title'], image=request.FILES['file'], recipe=Recipe.objects.get(id=2))
 
 	context = {
 	"form": PicsForm(),
@@ -155,10 +180,10 @@ def upload(request):
 	}
 	return render(request, 'cooking_app/uploadPic.html',context)
 
+def add_rating(request, recipe_id):
+	user_id = request.session['id']
+	Rating.objects.add_rating(recipe_id, user_id, request.POST)
+	return redirect(reverse('potluck:show_recipe', kwargs={'recipe_id':recipe_id}))
 
 
 
-
-
-
-#

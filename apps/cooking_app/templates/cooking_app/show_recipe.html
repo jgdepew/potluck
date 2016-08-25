@@ -27,6 +27,9 @@
 	#user_recipe, #saved_recipe{
 		margin-left: 25px
 	}
+	img, #info{
+		display: inline-block;
+	}
 </style>
 <body>
 
@@ -35,11 +38,32 @@
 		<ul>
 			<li><a href="{% url 'potluck:index' %}">Home</a></li>
 			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+			<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
 			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
 		</ul>
 	</div>
+	<img style="width: auto; height: 120px;" src="/{{image.image.url}}">
 	<div id="info">
-		<p><b>Rating:</b></p>
+
+		{% if avg_rating == 'No ratings yet.' %}
+			<p><b>{{avg_rating}}<b></p>
+		{% else %}
+			<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
+		{% endif %}
+
+		{% if request.session.id != recipe.creator.id %}
+			<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post">
+	        {% csrf_token %}
+	            <select name="rating">
+	                <option value='1'>1</option>
+	                <option value='2'>2</option>
+	                <option value='3'>3</option>
+	                <option value='4'>4</option>
+	                <option value='5'>5</option>
+	            </select>
+	            <input type="submit" value="Rate Meal">
+	        </form>
+	    {% endif %}
 		<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 		<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minutes.ute}} minutes.</p>
 		<p><b>Total Time:</b> hour(s), minutes.</p>
@@ -56,10 +80,12 @@
 	{% endif %}
 	</div>
 	<div id="comments">
-	{% for comment in comments %}
-		<p>{{comment.created_at}}: {{ comment.user.first_name }} wrote... </p>
-		<p>{{ comment.comment }}</p>
-	{% endfor %}
+		{% if comments %}
+			{% for comment in comments %}
+			<p>{{comment.created_at}}: {{ comment.user.first_name }} wrote... </p>
+			<p>{{ comment.comment }}</p>
+			{% endfor %}
+		{% endif %}
 	</div>
 	<form action="{% url 'potluck:show_recipe' recipe_id=recipe.id %}" method="post">
 	{% csrf_token %}
