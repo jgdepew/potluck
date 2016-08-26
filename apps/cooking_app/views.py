@@ -76,7 +76,7 @@ def show_recipe(request, recipe_id):
 	context = {
 		'user': User.objects.get(id=request.session['id']),
 		'recipe': Recipe.objects.get(id=recipe_id),
-		'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
+		'steps': Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)).order_by('created_at'),
 		'image': image,
 		'avg_rating': avg_rating,
 		'total_time_hour': total_time_hour,
@@ -125,7 +125,7 @@ def edit_recipe(request, recipe_id):
 
 	# test if there are any steps for this recipe and pass them if so
 	if len(Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)))>0:
-		steps = Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id))
+		steps = Step.objects.filter(recipe=Recipe.objects.get(id=recipe_id)).order_by('created_at')
 		step_count = steps.count() + 1
 	else: # otherwise, pass empty list rather than none (so traversing in the template doesnt cause an error)
 		steps = []
@@ -134,7 +134,8 @@ def edit_recipe(request, recipe_id):
 	context = {
 		'user': User.objects.get(id=request.session['id']),
 		'recipe': Recipe.objects.get(id=recipe_id),
-		'steps':steps, 'step_count': step_count,
+		'steps':steps,
+		'step_count': step_count,
 		'ingredients': Ingredient.objects.all(),
 		'measurements': Measurement.objects.all(),
 		'images': RecipePic.objects.all(),
