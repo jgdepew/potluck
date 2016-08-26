@@ -3,6 +3,14 @@
     <head>
         <meta charset="utf-8">
         <title>Add Your recipe!</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
         {% load staticfiles %}
         <script src="{% static 'cooking_app/js/js.cookie.js' %}"></script>
@@ -40,6 +48,12 @@
             }
             img, #update_recipe{
                 display: inline-block;
+            }
+            #recipe_img {
+                vertical-align: top;
+            }
+            .vert_align{
+                vertical-align: top;
             }
         </style>
         <script>
@@ -87,7 +101,7 @@
         {% endif %}
         {% for image in images %}
 			{% if image.recipe == recipe %}
-				<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+				<img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
 			{% endif %}
 		{% endfor %}
         <div id="update_recipe">
@@ -98,17 +112,18 @@
                 <label><input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0"> min</label><br>
                 <label>Cook Time: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"> hrs</label>
                 <label><input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"> min</label><br>
-                <label>Description: <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
+                <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
                 <input type="submit" value="Update Recipe">
             </form>
+            <br>
+            <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button>Delete Recipe</button></a> <a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}"><button>Go Back</button></a>
             <!-- add form to update food pic -->
-            <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button>Delete Recipe</button></a>
         </div>
-        <form enctype="multipart/form-data" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}" method="post">
+<!--         <form enctype="multipart/form-data" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}" method="post">
 			{% csrf_token %}
 			<label>Change Image: <input type="file" name="image"></label><br>
 			<input type="submit" value="Update Image">
-		</form>
+		</form> -->
         <hr>
         <div id="steps">
             <h3>Update your steps</h3>
@@ -139,7 +154,7 @@
                         <input type="text" name="new_ingredient" placeholder="Add new ingredient">
                         <label>Description: <textarea name="description" rows="3" cols="25">{{step.description}}</textarea></label>
                         <input type="hidden" name="step_id" value="{{step.id}}">
-                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}"><button>Delete Step</button></a>
+                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}"><button>Delete Step</button></a> 
                         <!-- <input type="submit" value="Update Step"> -->
                     </form>
                 </div>
