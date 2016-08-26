@@ -92,6 +92,7 @@ class RecipeManager(models.Manager):
 		# if int(form_info['cook_time_minute']) >= 0 and int(form_info['cook_time_minute']) < 60:
 		# 	errors.append('Cook Time minute must be a number 0 or more and less than 60')
 		return errors
+
 	def update(self, form_info, recipe_id):
 		recipe = Recipe.objects.get(id=recipe_id)
 		recipe.title = form_info['title']
@@ -101,6 +102,17 @@ class RecipeManager(models.Manager):
 		recipe.cook_time_hour = form_info['cook_time_hour']
 		recipe.cook_time_minute = form_info['cook_time_minute']
 		recipe.save()
+
+		recipe = Recipe.objects.get(id=recipe_id)
+		all_categories = Category.objects.all()
+		prev_select = Category.objects.filter(recipe=Recipe.objects.get(id=recipe_id))
+		for select in prev_select:
+			if select.category not in form_info:
+				Category.objects.get(category=select.category).recipe.remove(recipe)
+		for category in all_categories:
+			if category.category in form_info and category not in prev_select:
+				Category.objects.get(category=category.category).recipe.add(recipe)
+
 
 
 class StepManager(models.Manager):
@@ -180,6 +192,24 @@ class RecipePicManager(models.Manager):
 		else:
 			return RecipePic.objects.create(title=Recipe.objects.get(id=recipe_id).title, recipe=Recipe.objects.get(id=recipe_id), image=files['image'])
 
+class CategoryManager(models.Manager):
+	def create_categories(self):
+		categories = ['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Drinks', 'Other']
+		all_categories = Category.objects.all()
+		if len(all_categories) < 1:
+			for category in categories:
+				Category.objects.create(category=category)
+		elif len(all_categories) < len(categories):
+			for category in categories:
+				if len(Category.objects.filter(category=category)) < 1:
+					Category.objects.create(category=category)
+		return Category.objects.all()
+
+	def addCategory(self, form_info, recipe):
+		categories = Category.objects.all()
+		for category in categories:
+			if category.category in form_info:
+				Category.objects.get(category=category.category).recipe.add(recipe)
 
 
 
@@ -256,6 +286,13 @@ class Rating(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	objects = RatingManager()
+
+class Category(models.Model):
+	recipe = models.ManyToManyField('Recipe', related_name='recipe_category')
+	category = models.CharField(max_length=75)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	objects = CategoryManager()
 
 
 

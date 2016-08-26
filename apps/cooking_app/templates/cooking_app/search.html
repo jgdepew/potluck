@@ -10,8 +10,7 @@
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-</head>
-<style type="text/css">
+	<style type="text/css">
 	a:visited {
 		color: black;
 	}
@@ -38,9 +37,9 @@
 	.recipe_info, #recipe img{
 		display: inline-block;
 	}
-</style>
+	</style>
+</head>
 <body>
-
 	<div id="header">
 		<p>Welcome to <span id="title">potLuck</span>,</p>
 		<p>Hello <a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a>!</p>
@@ -53,11 +52,20 @@
 		</ul>
 	</div>
 	<div id="searchbar">
-		<h3>Search By Title or Description</h3>
+		<h3>Search By Title/Description or Filter by Category</h3>
 		<form method="post" action="{% url 'potluck:search' %}">
 			{% csrf_token %}
 			<input type="text" name="search" placeholder="Search...">
 			<input type="submit" value="Search">
+		</form>
+		<form id='category' action="{% url 'potluck:search' %}" method="post">
+			{% csrf_token %}
+			<select name='category'>
+				{% for category in categories %}
+			    	<option value="{{category.id}}">{{category.category}}</option>
+				{% endfor %}
+				<input type="submit" value="Select">
+			</select>
 		</form>
 	</div>
 	{% if keyword != '' %}
