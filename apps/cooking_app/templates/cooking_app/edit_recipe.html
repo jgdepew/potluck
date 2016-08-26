@@ -58,7 +58,13 @@
         </style>
         <script>
             $(document).ready(function(){
-                $('form').submit(function(e){
+                $('#new_step form').submit(function(e){
+                    e.preventDefault();
+                    $.post(this.action, $(this).serialize(), function(serverResponse){
+                        $('body').html(serverResponse)
+                    })
+                })
+                $('#update_recipe form').focusout(function(e){
                     e.preventDefault();
                     $.post(this.action, $(this).serialize(), function(serverResponse){
                         $('body').html(serverResponse)
@@ -113,7 +119,15 @@
                 <label>Cook Time: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"> hrs</label>
                 <label><input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"> min</label><br>
                 <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
-                <input type="submit" value="Update Recipe">
+                <p><label>Categories:</label></p>
+                {% for category in categories %}
+                    {% if category in selected_categories %}
+                        <input type="checkbox" name="{{category.category}}" value="{{category.id}}" checked> {{category.category}}
+                    {% else %}
+                        <input type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
+                    {% endif %}
+                {% endfor %}
+                <!-- <input type="submit" value="Update Recipe"> -->
             </form>
             <br>
             <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button>Delete Recipe</button></a> <a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}"><button>Go Back</button></a>
@@ -154,7 +168,7 @@
                         <input type="text" name="new_ingredient" placeholder="Add new ingredient">
                         <label>Description: <textarea name="description" rows="3" cols="25">{{step.description}}</textarea></label>
                         <input type="hidden" name="step_id" value="{{step.id}}">
-                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}"><button>Delete Step</button></a> 
+                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}"><button>Delete Step</button></a>
                         <!-- <input type="submit" value="Update Step"> -->
                     </form>
                 </div>

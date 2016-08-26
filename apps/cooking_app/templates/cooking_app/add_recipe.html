@@ -73,7 +73,14 @@
             <label>Cook Time: <input type="number" name="cook_time_hour" min="0" value="0"> hrs</label>
             <label><input type="number" name="cook_time_minute" min="0" value="0"> min</label><br>
             <label>Description: <textarea name="description" rows="3" cols="25"></textarea></label><br>
-            <label>Image: <input type="file" name="image"></label><br>
+            <label>Select a Category:</label><br>
+                {% for category in categories %}
+                    {% if forloop.counter|divisibleby:4 %}
+                        <br>
+                    {% endif %}
+                    <input type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
+                {% endfor %}
+            <p><label>Image: <input type="file" name="image"></label><br></p>
             <input type="submit" value="Add Recipe">
         </form>
     </body>

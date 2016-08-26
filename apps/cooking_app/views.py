@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic, Rating, UserPic
+from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic, Rating, UserPic, Category
 from django.contrib import messages
 import datetime
 from django.http import JsonResponse
@@ -84,6 +84,7 @@ def show_recipe(request, recipe_id):
 		'comments': Comment.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 		'images': RecipePic.objects.all(),
 		'rating': rating,
+		'selected_categories': Category.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	}
 	return render(request, 'cooking_app/show_recipe.html', context)
 
@@ -97,6 +98,7 @@ def add_recipe(request):
 			return redirect(reverse('potluck:add_recipe'))
 		#create the recipe if validations passed
 		recipe = Recipe.objects.create(title=request.POST['title'], creator=User.objects.get(id=request.session['id']), description=request.POST['description'], prep_time_hour=request.POST['prep_time_hour'], prep_time_minute=request.POST['prep_time_minute'], cook_time_hour=request.POST['cook_time_hour'], cook_time_minute=request.POST['cook_time_minute'])
+		Category.objects.addCategory(request.POST, recipe)
 		#add image
 		print request.FILES
 		if 'image' in request.FILES:
@@ -104,7 +106,7 @@ def add_recipe(request):
 			# RecipePic.objects.create(title=request.POST['title'], image=request.FILES['file'])
 		#redirect to edit page so user can add steps to recipe
 		return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': recipe.id}))
-	return render(request, 'cooking_app/add_recipe.html', {'user': User.objects.get(id=request.session['id'])})
+	return render(request, 'cooking_app/add_recipe.html', {'user': User.objects.get(id=request.session['id']), 'categories': Category.objects.create_categories()})
 
 
 def edit_recipe(request, recipe_id):
@@ -113,9 +115,8 @@ def edit_recipe(request, recipe_id):
 
 	if request.method == 'POST': # if 'POST' we are trying to update recipe, else trying to display edit page
 		print request.FILES
-		if 'image' in request.FILES:
-			print 'made it'
-			RecipePic.objects.update(recipe_id, request.Files)
+		# if 'image' in request.FILES:
+		# 	RecipePic.objects.update(recipe_id, request.Files)
 		if 'title' in request.POST:
 			if len(Recipe.objects.validateRecipe(request.POST)) > 0: # run validations. returns errors if failed
 				return redirect(reverse('potluck:edit_recipe'))
@@ -137,6 +138,8 @@ def edit_recipe(request, recipe_id):
 		'ingredients': Ingredient.objects.all(),
 		'measurements': Measurement.objects.all(),
 		'images': RecipePic.objects.all(),
+		'categories': Category.objects.all(),
+		'selected_categories': Category.objects.filter(recipe=Recipe.objects.get(id=recipe_id)),
 	}
 	return render(request, 'cooking_app/edit_recipe.html', context)
 
@@ -225,11 +228,18 @@ def save_recipe(request, recipe_id):
 
 def search(request):
 	if request.method == 'POST':
-		search = request.POST['search']
-		if search == '':
+		if 'category' in request.POST:
+			# results = Recipe.objects.filter()
 			results = []
+			search = ''
+			category = Category.objects.get(id=request.POST['category'])
+			results = Recipe.objects.filter(recipe_category=category)
 		else:
-			results = Recipe.objects.filter(Q(title__icontains=search) | Q(description__icontains=search))
+			search = request.POST['search']
+			if search == '':
+				results = []
+			else:
+				results = Recipe.objects.filter(Q(title__icontains=search) | Q(description__icontains=search))
 	else:
 		results = []
 		search = ''
@@ -238,6 +248,7 @@ def search(request):
 		'images': RecipePic.objects.all(),
 		'keyword': search,
 		'user': User.objects.get(id=request.session['id']),
+		'categories': Category.objects.all(),
 	}
 	return render(request, 'cooking_app/search.html', context)
 
@@ -250,4 +261,4 @@ def search(request):
 
 
 
-# 
+#
