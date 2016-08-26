@@ -86,7 +86,9 @@
 				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
 				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
 				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
-				<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+				{% if request.session.id == recipe.creator.id %}
+					<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+				{% endif %}
 			</div>
 			<br>
 			<hr>
@@ -106,6 +108,9 @@
 				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
 				<p><b>Created By:</b> <a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
 				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+				{% if request.session.id == recipe.creator.id %}
+					<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+				{% endif %}
 			</div>
 			<hr>
 		{% endfor %}
