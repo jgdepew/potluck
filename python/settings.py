@@ -75,10 +75,21 @@ WSGI_APPLICATION = 'python.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'evan', # This name must be lowercase but can be anything!
+        'USER': 'evan', # you can put whatever you want here
+        'PASSWORD': 'enter', # you can put whatever you want here
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -123,3 +134,6 @@ ENV_PATH = os.path.abspath(os.path.dirname(__file__))
 MEDIA_ROOT = os.path.join(ENV_PATH, 'media/')
 MEDIA_URL = 'ourMedia/'
 STATIC_URL = '/static/'
+
+#for deployment
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
