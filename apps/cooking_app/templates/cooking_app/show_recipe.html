@@ -38,6 +38,9 @@
 	img, .info{
 		display: inline-block;
 	}
+	#recipe_img {
+		vertical-align: top;
+	}
 </style>
 <body>
 
@@ -54,7 +57,7 @@
 	<div id="info">
 		{% for image in images %}
 			{% if image.recipe == recipe %}
-				<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+				<img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
 			{% endif %}
 		{% endfor %}
 		<div class="info">

@@ -41,6 +41,9 @@
 	.user_recipe_info{
 		display: inline-block;
 	}
+	.recipe_img {
+		vertical-align: top;
+	}
 </style>
 <body>
 
@@ -73,7 +76,7 @@
 			<h3>{{recipe.title}}</h3>
 			{% for image in images %}
 				{% if image.recipe == recipe %}
-					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+					<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
 				{% endif %}
 			{% endfor %}
 			<div class="user_recipe_info">
@@ -92,7 +95,7 @@
 			<h3>{{recipe.title}}</h3>
 			{% for image in images %}
 				{% if image.recipe == recipe %}
-					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+					<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
 				{% endif %}
 			{% endfor %}
 			<div class="user_recipe_info">
