@@ -75,23 +75,26 @@ WSGI_APPLICATION = 'python.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'evan', # This name must be lowercase but can be anything!
-        'USER': 'evan', # you can put whatever you want here
-        'PASSWORD': 'enter', # you can put whatever you want here
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+
+#DEPLOYMENT SETTINGS
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'evan', # This name must be lowercase but can be anything!
+#         'USER': 'evan', # you can put whatever you want here
+#         'PASSWORD': 'enter', # you can put whatever you want here
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
 
 
 # Password validation
