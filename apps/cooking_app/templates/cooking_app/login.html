@@ -23,8 +23,10 @@
 <body>
 
 	<div class='container'>
-		<h1><img src="../../static/cooking_app/images/gold1.png" alt=""><span id="title">potLuck</span></h1>
-		<p>Because shared food is best food</p>
+		<div id="header">
+			<h1><img src="../../static/cooking_app/images/gold1.png" alt=""><span id="title">potLuck</span></h1>
+			<p>Because shared food is best food</p>
+		</div>
 		<div id="form">
 			<h3>Login</h3>
 			<form action="{% url 'potluck:login' %}" method="post" class='form-horizontal'>
@@ -41,22 +43,23 @@
 				</div>
 				<div class="form-group">
 					<div class="col-sm-10">
-						<input type="submit" name="Login" class='btn btn-danger'>
+						<input type="submit" value="Login" class='btn btn-danger'>
 					</div>
 				</div>
 			</form>
+		<!-- </div> -->
+
+			{% if messages %}
+			<ul class="messages">
+			    {% for message in messages %}
+			    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+			    {% endfor %}
+			</ul>
+			{% endif %}
+
+			<br>
+			<a href="{% url 'potluck:register' %}">not a member? register here for free!</a>
 		</div>
-
-	{% if messages %}
-	<ul class="messages">
-	    {% for message in messages %}
-	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	    {% endfor %}
-	</ul>
-	{% endif %}
-
-	<br>
-	<a href="{% url 'potluck:register' %}">not a member? register here for free!</a>
 	</div>
 </body>
 </html>

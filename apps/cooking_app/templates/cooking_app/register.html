@@ -2,43 +2,65 @@
 <html>
 <head>
 	<title>potluck | register</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="../../static/cooking_app/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../static/cooking_app/css/logreg.css">
+	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
+	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
 <body>
 
-	<div id="title">
-		<h2>potluck</h2>
-		<p>Because shared food is best food</p>
+	<div id="container">
+		<div id="header">
+			<h1><img src="../../static/cooking_app/images/gold1.png" alt=""><span id="title">potLuck</span></h1>
+			<p>Because shared food is best food</p>
+		</div>
+		<div id="form">
+			<h3>Register</h3>
+			<form action="{% url 'potluck:register' %}" method="post" class='form-horizontal'>
+				{% csrf_token %}
+				<div class="form-group">
+					<div class="col-sm-12 col-md-12 col-lg-12">
+						<p>First Name: <input type="text" name="first_name" class='form-control'></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12 col-md-12 col-lg-12">
+						<p>Last Name: <input type="text" name="last_name" class='form-control'></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12 col-md-12 col-lg-12">
+						<p>Email:	<input type="text" name="email" class='form-control'></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12 col-md-12 col-lg-12">
+						<p>Password:<input type="password" name="password1" class='form-control'></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12 col-md-12 col-lg-12">
+						<p>Confirm Password:<input type="password" name="password2" class='form-control'></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<input type="submit" class='btn btn-danger' value="Register">
+					</div>
+				</div>
+			</form>
+
+			{% if messages %}
+			<ul class="messages">
+				{% for message in messages %}
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+
+			<br>
+			<a href="{% url 'potluck:login' %}">already have an account? login here!</a>
+		</div>
 	</div>
-
-	<h4>Register</h4>
-	<form action="{% url 'potluck:register' %}" method="post">
-		{% csrf_token %}
-		<p>First Name: <input type="text" name="first_name"></p>
-		<p>Last Name: <input type="text" name="last_name"></p>
-		<p>Email:	<input type="text" name="email"></p>
-		<p>Password:<input type="password" name="password1"></p>
-		<p>Confirm Password:<input type="password" name="password2"></p>
-		<input type="submit" name="Register">
-	</form>
-
-	{% if messages %}
-	<ul class="messages">
-	    {% for message in messages %}
-	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	    {% endfor %}
-	</ul>
-	{% endif %}
-
-	<br>
-	<a href="{% url 'potluck:login' %}">already have an account? login here!</a>
-
 </body>
 </html>
