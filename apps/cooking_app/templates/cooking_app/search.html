@@ -2,15 +2,11 @@
 <html>
 <head>
 	<title>Search</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<style type="text/css">
+	<link rel="stylesheet" href="../../static/cooking_app/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../static/cooking_app/css/search.css">
+	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
+	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
+	<!-- /*<style type="text/css">
 	a:visited {
 		color: black;
 	}
@@ -40,60 +36,91 @@
 	a:link{
 		color: black;
 	}
-	</style>
+	</style>*/ -->
 </head>
 <body>
-	<div id="header">
-		<p>Welcome to <span id="title">potLuck</span>,</p>
-		<p>Hello <a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a>!</p>
-		<ul>
-			<li><a href="{% url 'potluck:index' %}">Home</a></li>
-			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-			<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-			<li><a href="{% url 'potluck:search' %}">Search</a></li>
-			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
-		</ul>
-	</div>
-	<div id="searchbar">
-		<h3>Search By Title/Description or Filter by Category</h3>
-		<form method="post" action="{% url 'potluck:search' %}">
-			{% csrf_token %}
-			<input type="text" name="search" placeholder="Search...">
-			<input type="submit" value="Search">
-		</form>
-		<form id='category' action="{% url 'potluck:search' %}" method="post">
-			{% csrf_token %}
-			<select name='category'>
-				{% for category in categories %}
-			    	<option value="{{category.id}}">{{category.category}}</option>
-				{% endfor %}
-				<input type="submit" value="Select">
-			</select>
-		</form>
-	</div>
-	{% if keyword != '' %}
-	<p>Showing results filtered by keyword "{{keyword}}"...</p>
-	{% endif %}
-	<div id="recipe_results">
-		{% for recipe in results %}
-			<h3>{{recipe.title}}</h3>
-			{% for image in images %}
-				{% if image.recipe == recipe %}
-					<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+	<div class="container">
+		<div class="container-fluid">
+			<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+							<span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+						</button>
+						<a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+						<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
+					</div>
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+							<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
+							<li><a href="{% url 'potluck:search' %}">Search</a></li>
+							<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<div class="main">
+				<!-- <p>Welcome to <span id="title">potLuck</span>,</p> -->
+				<div id="searchbar">
+						<div class="search-form row">
+							<h3>Search By Keyword</h3>
+							<form method="post" action="{% url 'potluck:search' %}" class='form-horizontal'>
+								{% csrf_token %}
+								<div class="form-group col-xs-12">
+									<input type="text" name="search" placeholder="Search..." class='form-control'>
+								</div>
+								<div class="form-group col-xs-2">
+									<input type="submit" value="Search" class='btn btn-danger'>
+								</div>
+							</form>
+						</div>
+						<div class="filter-form row">
+							<h3>Filter by Category</h3>
+							<form id='category' action="{% url 'potluck:search' %}" method="post" class='form-horizontal'>
+								{% csrf_token %}
+								<div class="form-group col-xs-12">
+									<select name='category' class='form-control'>
+										{% for category in categories %}
+										<option value="{{category.id}}">{{category.category}}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="form-group col-xs-2">
+									<input type="submit" value="Select" class='btn btn-danger'>
+								</div>
+							</form>
+						</div>
+				</div>
+				{% if results %}
+				<h1>Results</h1>
 				{% endif %}
-			{% endfor %}
-			<div class="user_recipe_info">
-				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
-				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
-				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
-				<p><b>Description: </b>{{recipe.description}}</p>
-				{% if request.session.id == recipe.creator.id %}
-				<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+				{% if keyword != '' %}
+				<p>Showing results filtered by keyword "{{keyword}}"...</p>
 				{% endif %}
+				<div id="recipe_results">
+					{% for recipe in results %}
+					<div class="recipe">
+						<h3>{{recipe.title}}</h3>
+						{% for image in images %}
+						{% if image.recipe == recipe %}
+						<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
+						{% endif %}
+						{% endfor %}
+						<div class="user_recipe_info">
+							<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+							<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+							<p><b>Description: </b>{{recipe.description}}</p>
+							<p><a class='ingredient' href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+							{% if request.session.id == recipe.creator.id %}
+							<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+							{% endif %}
+						</div>
+					</div>
+					{% endfor %}
+				</div>
 			</div>
-			<br>
-			<hr>
-		{% endfor %}
+		</div>
 	</div>
 </body>
 </html>

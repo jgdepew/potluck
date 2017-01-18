@@ -2,37 +2,10 @@
 <html>
 <head>
 	<title>potLuck</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-	<!-- {% load staticfiles %}
-	<script src="{% static 'cooking_app/css/bootstrap.min.css' %}" rel="stylesheet"></script> -->
-
-	<!-- Latest compiled and minified JavaScript -->
-	<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
-	<style type="text/css">
-		.recipe_info, #recipes img{
-			display: inline-block;
-		}
-		.recipe_img {
-			vertical-align: top;
-			height: 12em;
-			width: 12em;
-		}
-		.main{
-			margin-top: 6em;
-			width: 70%;
-		}
-		.recipe_info{
-			margin-left: 2em;
-		}
-		.recipe{
-			display: inline-block;
-			margin-right: 6em;
-			width: 450px;
-			margin-bottom: 5em;
-		}
-	</style>
+	<link rel="stylesheet" href="../../static/cooking_app/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../static/cooking_app/css/dash.css">
+	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
+	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
 <body id='page-top'>
 	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
@@ -41,8 +14,8 @@
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="#page-top">potLuck</a>
-				<p class='navbar-brand'>| &nbsp; Welcome {{user.first_name}}!</p>
+                <a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+								<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
@@ -56,24 +29,31 @@
     </nav>
 
 	<div class="container main">
+		<h1><span>Welcome to </span><br><img class='logo' src="../../static/cooking_app/images/gold1.png" alt=""> potLuck!</h1>
+		<hr>
 		<h2>What's on today's menu?</h2>
 		<div id="recipes">
 			{% for recipe in recipes %}
-				<div class="recipe">
+				<div class="recipe col-xs-12">
 					<h3>{{recipe.title}}</h3>
 					{% for image in images %}
 						{% if image.recipe == recipe %}
+						<div class="bg">
 							<img class='recipe_img' src="/{{image.image.url}}">
+						</div>
 						{% endif %}
 					{% endfor %}
 					<div class='recipe_info'>
 						<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 						<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hour(s), {{recipe.cook_time_minute}} minutes.</p>
 						<p><b>Created by: </b><a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
-						<a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
+						<a class='ingredient' href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a>
 					</div>
 				</div>
 			{% endfor %}
+		</div>
+		<div id="sidebar">
+			<h3>Random Recipes</h3>
 		</div>
 	</div>
 </body>

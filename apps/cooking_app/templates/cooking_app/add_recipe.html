@@ -3,89 +3,87 @@
     <head>
         <meta charset="utf-8">
         <title>Add Your recipe!</title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-        <!-- Optional theme -->
-<!--         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
-
-        {% load staticfiles %}
-        <script src="{% static 'cooking_app/css/bootstrap.min.css' %}"></script>
-
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <style type="text/css">
-        	a:visited {
-        		color: black;
-        	}
-        	#header li{
-        		list-style: none;
-        		display: inline-block;
-        		margin-right: 20px;
-        	}
-        	#header{
-        		display:inline-block;
-        		text-align: center;
-        		width:100%;
-        	}
-        	#title {
-        		font-size: 2em;
-        	}
-        	#name {
-        		font-size: 1.25em;
-        		text-decoration: none;
-        	}
-            input[type=number]{
-                width: 30px;
-            }
-            input[type=number], input[type=text], textarea{
-                border: none;
-                background-color: #eaeaea;
-                outline-width: medium;
-            } value="0"
-            label{
-                vertical-align: top;
-            }
-            a:link{
-        		color: black;
-        	}
-        </style>
+        <link rel="stylesheet" href="../../static/cooking_app/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../static/cooking_app/css/add.css">
+        <script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
+        <script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
     </head>
     <body>
-        <div id="header">
-    		<p>Welcome to <span id="title">potLuck</span>,</p>
-    		<p><a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a></p>
-    		<ul>
-                <li><a href="{% url 'potluck:index' %}">Home</a></li>
-                <li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-                <li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-                <li><a href="{% url 'potluck:search' %}">Search</a></li>
-                <li><a href="{% url 'potluck:logout' %}">Logout</a></li>
-    		</ul>
-    	</div>
-        {% if messages %}
-            {% for message in messages %}
-                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-        <form enctype="multipart/form-data" action="{% url 'potluck:add_recipe' %}" method="post">
-            {% csrf_token %}
-            <label>Recipe Title: <input type="text" name="title"></label><br>
-            <label>Prep Time:<input type="number" name="prep_time_hour" min="0" value="0"> hrs</label>
-            <label><input type="number" name="prep_time_minute" min="0" value="0"> min</label><br>
-            <label>Cook Time: <input type="number" name="cook_time_hour" min="0" value="0"> hrs</label>
-            <label><input type="number" name="cook_time_minute" min="0" value="0"> min</label><br>
-            <label>Description: <textarea name="description" rows="3" cols="25"></textarea></label><br>
-            <label>Select a Category:</label><br>
-                {% for category in categories %}
-                    {% if forloop.counter|divisibleby:4 %}
-                        <br>
+        <div class="container">
+            <div class="container-fluid">
+                <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                            </button>
+                            <a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+            				<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
+                        </div>
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="{% url 'potluck:index' %}">Home</a></li>
+                                <li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+                                <li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
+                                <li><a href="{% url 'potluck:search' %}">Search</a></li>
+                                <li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div class="main">
+                    <div id="header">
+                        <h1>Add a Recipe!</h1>
+                        <!-- <p><a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a></p>
+                        <ul>
+                        <li><a href="{% url 'potluck:index' %}">Home</a></li>
+                        <li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+                        <li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
+                        <li><a href="{% url 'potluck:search' %}">Search</a></li>
+                        <li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+                    </ul> -->
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
                     {% endif %}
-                    <input type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
-                {% endfor %}
-            <p><label>Image: <input type="file" name="image"></label><br></p>
-            <input type="submit" value="Add Recipe">
-        </form>
+                    <form enctype="multipart/form-data" action="{% url 'potluck:add_recipe' %}" method="post" class='form-horizontal'>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Recipe Title: <input type="text" name="title" class='form-control'></label><br>
+                        </div>
+                        <div class="form-group">
+                            <label>Prep Time:<br><input type="number" name="prep_time_hour" min="0" value="0" class='form-control inline'> hrs</label>
+                            <label><input type="number" name="prep_time_minute" min="0" value="0" class='form-control inline'> min</label><br>
+                        </div>
+                        <div class="form-group">
+                            <label>Cook Time:<br><input type="number" name="cook_time_hour" min="0" value="0" class='form-control inline'> hrs</label>
+                            <label><input type="number" name="cook_time_minute" min="0" value="0" class='form-control inline'> min</label><br>
+                        </div>
+                        <div class="form-group">
+                            <label>Description: <textarea name="description" rows="3" cols="25" class='form-control'></textarea></label><br>
+                        </div>
+                        <div class="form-group">
+                            <label>Select a Category:</label><br>
+                            {% for category in categories %}
+                            {% if forloop.counter|divisibleby:4 %}
+                            <br>
+                            {% endif %}
+                            <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <p><label>Image: <input class='btn btn-sm' type="file" name="image"></label><br></p>
+                        </div>
+                        <div class="form-group">
+                            <input class='btn btn-danger' type="submit" value="Add Recipe">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
 

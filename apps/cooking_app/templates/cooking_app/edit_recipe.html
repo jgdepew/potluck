@@ -3,62 +3,12 @@
     <head>
         <meta charset="utf-8">
         <title>Add Your recipe!</title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+        <link rel="stylesheet" href="../../static/cooking_app/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../static/cooking_app/css/add.css">
+        <script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
+        <script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
         {% load staticfiles %}
         <script src="{% static 'cooking_app/js/js.cookie.js' %}"></script>
-        <style type="text/css">
-        	a:visited {
-        		color: black;
-        	}
-        	#header li{
-        		list-style: none;
-        		display: inline-block;
-        		margin-right: 20px;
-        	}
-        	#header{
-        		display:inline-block;
-        		text-align: center;
-        		width: 100%;
-        	}
-        	#title {
-        		font-size: 2em;
-        	}
-        	#name {
-        		font-size: 1.25em;
-        		text-decoration: none;
-        	}
-            input[type=number]{
-                width: 30px;
-            }
-            input[type=number], input[type=text], textarea{
-                border: none;
-                background-color: #eaeaea;
-                outline-width: medium;
-            }
-            label, select, input{
-                vertical-align: top;
-            }
-            img, #update_recipe{
-                display: inline-block;
-            }
-            #recipe_img {
-                vertical-align: top;
-            }
-            .vert_align{
-                vertical-align: top;
-            }
-            a:link{
-        		color: black;
-        	}
-        </style>
         <script>
             $(document).ready(function(){
                 $('#new_step form').submit(function(e){
@@ -92,112 +42,166 @@
         </script>
     </head>
     <body>
-        <div id="header">
-    		<p>Welcome to <span id="title">potLuck</span>,</p>
-    		<p><a id="name" href="{% url 'potluck:show_user' id=user.id %}">{{user.first_name}}</a></p>
-    		<ul>
-                <li><a href="{% url 'potluck:index' %}">Home</a></li>
-                <li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-                <li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-                <li><a href="{% url 'potluck:search' %}">Search</a></li>
-                <li><a href="{% url 'potluck:logout' %}">Logout</a></li>
-    		</ul>
-    	</div>
-        {% if messages %}
-            {% for message in messages %}
-                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-        {% for image in images %}
-			{% if image.recipe == recipe %}
-				<img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
-			{% endif %}
-		{% endfor %}
-        <div id="update_recipe">
-            <form action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post">
-                {% csrf_token %}
-                <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}"></label><br>
-                <label>Prep Time: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0"> hrs </label>
-                <label><input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0"> min</label><br>
-                <label>Cook Time: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0"> hrs</label>
-                <label><input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0"> min</label><br>
-                <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25">{{recipe.description}}</textarea></label><br>
-                <p><label>Categories:</label></p>
-                {% for category in categories %}
-                    {% if category in selected_categories %}
-                        <input type="checkbox" name="{{category.category}}" value="{{category.id}}" checked> {{category.category}}
-                    {% else %}
-                        <input type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
+        <div class="container">
+            <div class="container-fluid">
+                <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                            </button>
+                            <a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+            				<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
+                        </div>
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="{% url 'potluck:index' %}">Home</a></li>
+                                <li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+                                <li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
+                                <li><a href="{% url 'potluck:search' %}">Search</a></li>
+                                <li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div class="main">
+                    <div id="header">
+                        <p>Welcome to <span id="title">potLuck</span></p>
+                        <h1>Edit your Recipe!</h1>
+                        <p class='para'>Here you are able to edit you're own recipe and add anything that you may have missed!</p>
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
                     {% endif %}
-                {% endfor %}
-                <!-- <input type="submit" value="Update Recipe"> -->
-            </form>
-            <br>
-            <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button>Delete Recipe</button></a> <a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}"><button>View Recipe</button></a>
-            <!-- add form to update food pic -->
-        </div>
-<!--         <form enctype="multipart/form-data" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}" method="post">
-			{% csrf_token %}
-			<label>Change Image: <input type="file" name="image"></label><br>
-			<input type="submit" value="Update Image">
-		</form> -->
-        <hr>
-        <div id="steps">
-            <h3>Update your steps</h3>
-            {% for step in steps %}
-                <div id="div_{{step.id}}" class="step">
-                    <form id='{{step.id}}' class='update_step' action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
-                        {% csrf_token %}
-                        <label>Step #{{ forloop.counter }}</label>
-                        <label>Measurement: <select name='measurement'>
-                            {% for measurement in measurements %}
-                                {% if measurement ==  step.measurement %}
-                                    <option selected="selected" value="{{measurement.id}}">{{measurement.measurement}}</option>
-                                {% else %}
-                                    <option value="{{measurement.id}}">{{measurement.measurement}}</option>
+                    <!-- {% for image in images %}
+                    {% if image.recipe == recipe %}
+                    <img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
+                    {% endif %}
+                    {% endfor %} -->
+                    <div id="update_recipe">
+                        <div id="form">
+                            <form action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post" class='form-horizontal edit'>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}" class='form-control'></label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Prep Time: <input type="number" name="prep_time_hour" value="{{recipe.prep_time_hour}}" min="0" class='form-control inline time'> hrs </label>
+                                    <label><input type="number" name="prep_time_minute" value="{{recipe.prep_time_minute}}" min="0" class='form-control inline time'> min</label><br>
+                                </div>
+                                <div class="form-group">
+                                    <label>Cook Time: <input type="number" name="cook_time_hour" value="{{recipe.cook_time_hour}}" min="0" class='form-control inline time'> hrs</label>
+                                    <label><input type="number" name="cook_time_minute" value="{{recipe.cook_time_minute}}" min="0" class='form-control inline time'> min</label><br>
+                                </div>
+                                <div class="form-group">
+                                    <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25" class='form-control'>{{recipe.description}}</textarea></label><br>
+                                </div>
+                                <div class="form-group">
+                                    <p><label>Categories:</label></p>
+                                    {% for category in categories %}
+                                    {% if category in selected_categories %}
+                                    <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}" checked> {{category.category}}
+                                    {% else %}
+                                    <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <!-- <input type="submit" value="Update Recipe"> -->
+                                <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Delete Recipe</button></a> <a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>View Recipe</button></a>
+                            </form>
+                            <div class="foodpic">
+                                {% for image in images %}
+                                {% if image.recipe == recipe %}
+                                <img id="recipe_img" class='img-responsive' src="/{{image.image.url}}">
                                 {% endif %}
-                            {% endfor %}
-                        </select></label>
-                        <input type="text" name="new_measurement" placeholder="Add new measurement">
-                        <label>Ingredient: <select name='ingredient'>
-                            {% for ingredient in ingredients %}
-                                {% if ingredient ==  step.ingredient %}
-                                    <option selected="selected" value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
-                                {% else %}
-                                    <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select></label>
-                        <input type="text" name="new_ingredient" placeholder="Add new ingredient">
-                        <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25">{{step.description}}</textarea></label>
-                        <input type="hidden" name="step_id" value="{{step.id}}">
-                        <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}"><button>Delete Step</button></a>
-                        <!-- <input type="submit" value="Update Step"> -->
-                    </form>
-                </div>
-            {% endfor %}
-            <hr>
-            <div id="new_step">
-                <h3>Add a Step</h3>
-                <form id='new_step_form' class='new_step' action="{% url 'potluck:add_step' %}" method="post">
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- add form to update food pic -->
+                    </div>
+                    <!--         <form enctype="multipart/form-data" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}" method="post">
                     {% csrf_token %}
-                    <label>Step #{{step_count}}</label>
-                    <label>Measurement: <select name='measurement'>
-                        {% for measurement in measurements %}
-                            <option value="{{measurement.id}}">{{measurement.measurement}}</option>
+                    <label>Change Image: <input type="file" name="image"></label><br>
+                    <input type="submit" value="Update Image">
+                    </form> -->
+                    <hr>
+                    <div id="steps">
+                        <h3>Update your steps</h3>
+                        {% for step in steps %}
+                        <div id="div_{{step.id}}" class="step">
+                            <form id='{{step.id}}' class='update_step form-horizontal' action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label>Step #{{ forloop.counter }}</label>
+                                    <label>Measurement: <select name='measurement'>
+                                        {% for measurement in measurements %}
+                                        {% if measurement ==  step.measurement %}
+                                        <option selected="selected" value="{{measurement.id}}">{{measurement.measurement}}</option>
+                                        {% else %}
+                                        <option value="{{measurement.id}}">{{measurement.measurement}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select></label>
+                                    <input type="text" name="new_measurement" placeholder="Add new measurement" class='form-control'>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ingredient: <select name='ingredient'>
+                                        {% for ingredient in ingredients %}
+                                        {% if ingredient ==  step.ingredient %}
+                                        <option selected="selected" value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
+                                        {% else %}
+                                        <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select></label>
+                                    <input type="text" name="new_ingredient" placeholder="Add new ingredient" class='form-control'>
+                                </div>
+                                <div class="form-group">
+                                    <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25" class='form-control'>{{step.description}}</textarea></label>
+                                    <input type="hidden" name="step_id" value="{{step.id}}">
+                                </div>
+                                <div class="form-group">
+                                    <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}"><button class='btn btn-danger'>Delete Step</button></a>
+                                    <!-- <input type="submit" value="Update Step"> -->
+                                </div>
+                            </form>
+                        </div>
                         {% endfor %}
-                    </select></label>
-                    <input type="text" name="new_measurement" placeholder="Add new measurement">
-                    <label>Ingredient: <select name='ingredient'>
-                        {% for ingredient in ingredients %}
-                        <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
-                        {% endfor %}
-                    </select></label>
-                    <input type="text" name="new_ingredient" placeholder="Add new ingredient">
-                    <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25"></textarea></label>
-                    <input type="hidden" name="recipe_id" value="{{recipe.id}}">
-                    <input type="submit" value="Add Step">
-                </form>
+                        <hr>
+                        <div id="new_step">
+                            <h3>Add a Step</h3>
+                            <form id='new_step_form' class='new_step form-horizontal' action="{% url 'potluck:add_step' %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label>Measurement: <select name='measurement'>
+                                        {% for measurement in measurements %}
+                                        <option value="{{measurement.id}}">{{measurement.measurement}}</option>
+                                        {% endfor %}
+                                    </select></label>
+                                    <input type="text" name="new_measurement" placeholder="Add new measurement" class='form-control'>
+                                </div>
+                                <div class="form-group">
+                                    <label>Step #{{step_count}}</label>
+                                    <label>Ingredient: <select name='ingredient'>
+                                        {% for ingredient in ingredients %}
+                                        <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
+                                        {% endfor %}
+                                    </select></label>
+                                    <input type="text" name="new_ingredient" placeholder="Add new ingredient" class='form-control'>
+                                </div>
+                                <div class="form-group">
+                                    <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25" class='form-control'></textarea></label>
+                                    <input type="hidden" name="recipe_id" value="{{recipe.id}}">
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Add Step" class='btn btn-danger'>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>

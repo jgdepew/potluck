@@ -2,118 +2,125 @@
 <html>
 <head>
 	<title>Profile</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-	<!-- Optional theme -->
-<!-- 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
-
-	{% load staticfiles %}
-	<script src="{% static 'cooking_app/css/bootstrap.min.css' %}" rel="stylesheet"></script>
-
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="../../static/cooking_app/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../static/cooking_app/css/profile.css">
+	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
+	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
-<style type="text/css">
-	a:visited {
-		color: black;
-	}
-	#header li{
-		list-style: none;
-		display: inline-block;
-		margin-right: 20px;
-	}
-	#header{
-		display:inline-block;
-		text-align: center;
-		width: 100%;
-	}
-	#title {
-		font-size: 2em;
-	}
-	#name {
-		font-size: 1.25em;
-		text-decoration: none;
-	}
-	#user_recipe, #saved_recipe{
-		margin-left: 25px
-	}
-	.user_recipe_info{
-		display: inline-block;
-	}
-	.recipe_img {
-		vertical-align: top;
-	}
-	a:link{
-		color: black;
-	}
-</style>
 <body>
+	<div class="container">
+		<div class="container-fluid">
+			<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+					<div class="container-fluid">
+							<div class="navbar-header">
+									<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+											<span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+									</button>
+									<a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+									<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
+							</div>
+							<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+									<ul class="nav navbar-nav navbar-right">
+											<li><a href="{% url 'potluck:index' %}">Home</a></li>
+											<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+											<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
+											<li><a href="{% url 'potluck:search' %}">Search</a></li>
+											<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+									</ul>
+							</div>
+					</div>
+			</nav>
+			<div class="main">
 
-	<div id="header">
-		<p><a id="name" href="{% url 'potluck:show_user' id=request.session.id %}">{{user.first_name}}'s Profile</a></p>
-		<ul>
-			<li><a href="{% url 'potluck:index' %}">Home</a></li>
-			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-			<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-			<li><a href="{% url 'potluck:search' %}">Search</a></li>
-			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
-		</ul>
-	</div>
-	<h2>{{user.first_name}} {{user.last_name}}</h2> <br>
-	{% if not user_pic == '' %}
-		<img style="width: auto; height: 150px;" src="/{{user_pic.image.url}}">
-	{% else %}
-		<p style="font-size: 10px; ">No profile picture</p>
-	{% endif %}
-	{% if user == self %}
-		<form enctype="multipart/form-data" action="{% url 'potluck:show_user' id=user.id %}" method="post">
-			{% csrf_token %}
-			<label>Profile Pic: <input type="file" name="image"></label><br>
-			<input type="submit" value="Add Profile Pic">
-		</form>
-	{% endif %}
-	<div id="user_recipe">
-	<h2>{{user.first_name}}'s Recipes</h2>
-		{% for recipe in recipes %}
-			<h3>{{recipe.title}}</h3>
-			{% for image in images %}
-				{% if image.recipe == recipe %}
-					<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
+				<div id="header">
+					<h2><a id="name" href="{% url 'potluck:show_user' id=request.session.id %}">{{user.first_name}}'s Profile</a></h2>
+					<hr>
+				</div>
+				<h2>{{user.first_name}} {{user.last_name}}</h2>
+				{% if not user_pic == '' %}
+				<img style="width: auto; height: 150px;" src="/{{user_pic.image.url}}">
+				{% else %}
+				<p style="font-size: 10px; ">No profile picture</p>
 				{% endif %}
-			{% endfor %}
-			<div class="user_recipe_info">
-				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
-				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
-				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
-				{% if request.session.id == recipe.creator.id %}
-					<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+				{% if user == self %}
+				<form enctype="multipart/form-data" action="{% url 'potluck:show_user' id=user.id %}" method="post">
+					{% csrf_token %}
+					<label>Profile Pic: <input type="file" name="image"></label><br>
+					<div class="form-group">
+						<input type="submit" value="Add Profile Pic" class='btn btn-danger'>
+					</div>
+				</form>
 				{% endif %}
+				<h2>{{user.first_name}}'s Recipes</h2>
+				<!-- <hr class='recipes_hr'> -->
+				{% if not recipes %}
+						<p class='none'>User has uploaded no recipes</p>
+				{% endif %}
+				<div id="user_recipe">
+						{% for recipe in recipes %}
+						<div class="recipe">
+							<div class="tack">
+								<img class='tack' src="../../static/cooking_app/images/tack.png" alt="">
+							</div>
+							<h3 class='recipe_title'>{{recipe.title}}</h3>
+							{% for image in images %}
+							{% if image.recipe == recipe %}
+							<div class="bg">
+								<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
+							</div>
+							{% endif %}
+							{% endfor %}
+							<div class="user_recipe_info">
+								<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+								<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+								<p><a class='ingredient' href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+								{% if request.session.id == recipe.creator.id %}
+								<div class="form-group">
+									<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
+								</div>
+								{% endif %}
+							</div>
+							<br>
+						</div>
+						<hr>
+						{% endfor %}
+				</div>
+				{% if saves %}
+				<h2>Saved Recipes</h2>
+				<!-- <hr class='recipes_hr'> -->
+				{% endif %}
+				<div id="saved_recipe">
+					{% for recipe in saves %}
+					<div class="recipe">
+						<div class="tack">
+							<img class='tack' src="../../static/cooking_app/images/tack.png" alt="">
+						</div>
+						<h3 class='recipe_title'>{{recipe.title}}</h3>
+						{% for image in images %}
+						{% if image.recipe == recipe %}
+						<div class="bg">
+							<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
+						</div>
+						{% endif %}
+						{% endfor %}
+						<div class="user_recipe_info">
+							<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+							<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+							<p><b>Created By:</b> <a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
+							<p><a class='ingredient' href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+							{% if request.session.id == recipe.creator.id %}
+							<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+							{% endif %}
+						</div>
+					</div>
+					<hr>
+					{% endfor %}
+				</div>
 			</div>
-			<br>
-			<hr>
-		{% endfor %}
+
+		</div>
 	</div>
-	<div id="saved_recipe">
-		<h2>Saved Recipes</h2>
-		{% for recipe in saves %}
-			<h3>{{recipe.title}}</h3>
-			{% for image in images %}
-				{% if image.recipe == recipe %}
-					<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
-				{% endif %}
-			{% endfor %}
-			<div class="user_recipe_info">
-				<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
-				<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
-				<p><b>Created By:</b> <a href="{% url 'potluck:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
-				<p><a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
-				{% if request.session.id == recipe.creator.id %}
-					<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
-				{% endif %}
-			</div>
-			<hr>
-		{% endfor %}
-	</div>
+
+
 </body>
 </html>
