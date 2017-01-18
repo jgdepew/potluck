@@ -6,37 +6,6 @@
 	<link rel="stylesheet" href="../../static/cooking_app/css/search.css">
 	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
 	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
-	<!-- /*<style type="text/css">
-	a:visited {
-		color: black;
-	}
-	#header li{
-		list-style: none;
-		display: inline-block;
-		margin-right: 20px;
-	}
-	#header{
-		display:inline-block;
-		text-align: center;
-		width: 100%;
-	}
-	#title {
-		font-size: 2em;
-	}
-	#name {
-		font-size: 1.25em;
-		text-decoration: none;
-	}
-	#recipe {
-		margin-left: 25px
-	}
-	.recipe_info, #recipe img{
-		display: inline-block;
-	}
-	a:link{
-		color: black;
-	}
-	</style>*/ -->
 </head>
 <body>
 	<div class="container">
@@ -52,6 +21,7 @@
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
+							<li><a href="{% url 'potluck:index' %}">Home</a></li>
 							<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
 							<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
 							<li><a href="{% url 'potluck:search' %}">Search</a></li>
@@ -113,7 +83,7 @@
 							<p><b>Description: </b>{{recipe.description}}</p>
 							<p><a class='ingredient' href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
 							{% if request.session.id == recipe.creator.id %}
-							<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
+							<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
 							{% endif %}
 						</div>
 					</div>

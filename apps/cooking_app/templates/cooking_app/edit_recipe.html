@@ -66,7 +66,6 @@
                 </nav>
                 <div class="main">
                     <div id="header">
-                        <p>Welcome to <span id="title">potLuck</span></p>
                         <h1>Edit your Recipe!</h1>
                         <p class='para'>Here you are able to edit you're own recipe and add anything that you may have missed!</p>
                     </div>
@@ -109,8 +108,8 @@
                                     {% endfor %}
                                 </div>
                                 <!-- <input type="submit" value="Update Recipe"> -->
-                                <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Delete Recipe</button></a> <a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>View Recipe</button></a>
                             </form>
+                            <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Delete Recipe</button></a> <a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>View Recipe</button></a>
                             <div class="foodpic">
                                 {% for image in images %}
                                 {% if image.recipe == recipe %}

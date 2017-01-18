@@ -17,6 +17,12 @@ body{
   width: 75%;
   background-color: white;
   height: 100%;
+  padding: 1.5em;
+}
+
+.main h1{
+  padding: .5em 0;
+  margin-top: 0;
 }
 
 .inline{
@@ -92,4 +98,43 @@ a:link{
 
 textarea {
   resize: none;
+}
+
+hr{
+  width: 90%;
+}
+
+.bg img {
+  vertical-align: middle;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.bg{
+  width: 15em;
+  height: 15em;
+  text-align: center;
+  padding: 1em;
+  margin-bottom: 1em;
+  display:inline-block;
+  vertical-align: top;
+  border: 1px #dedcdb solid;
+  /*box-shadow: .125em .25em 1em;*/
+}
+
+.form-horizontal{
+  padding-top: 0
+}
+
+.info{
+  padding: 1em;
+  padding-top: 0;
+}
+
+.comment{
+  margin-left: 1em;
+}
+
+#comments{
+  padding: 1em;
 }

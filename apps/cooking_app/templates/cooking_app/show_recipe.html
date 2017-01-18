@@ -2,14 +2,10 @@
 <html>
 <head>
 	<title>Recipe</title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="../../static/cooking_app/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../static/cooking_app/css/add.css">
+	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
+	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
 <style type="text/css">
 	a:visited {
@@ -46,86 +42,110 @@
 	}
 </style>
 <body>
-
-	<div id="header">
-		<h1>{{recipe.title}}</h1>
-		<ul>
-			<li><a href="{% url 'potluck:index' %}">Home</a></li>
-			<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-			<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-			<li><a href="{% url 'potluck:search' %}">Search</a></li>
-			<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
-		</ul>
-	</div>
-	<div id="info">
-		{% for image in images %}
-			{% if image.recipe == recipe %}
-				<img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
-			{% endif %}
-		{% endfor %}
-		<div class="info">
-			{% if avg_rating == 'No ratings yet.' %}
-				<p><b>{{avg_rating}}</b></p>
-			{% else %}
-				<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
-			{% endif %}
-			{% if request.session.id != recipe.creator.id and rating %}
-				<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post">
-		        {% csrf_token %}
-		            <select name="rating">
-		                <option value='1'>1</option>
-		                <option value='2'>2</option>
-		                <option value='3'>3</option>
-		                <option value='4'>4</option>
-		                <option value='5'>5</option>
-		            </select>
-		            <input type="submit" value="Rate Meal">
-		        </form>
-		    {% endif %}
-		    {% if request.session.id != recipe.creator.id %}
-	   		<p><a href="{% url 'potluck:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
-		    {% endif %}
-			<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
-			<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>
-			<p><b>Total Time:</b> {{total_time_hour}} hour(s), {{total_time_minute}} minutes.</p>
-			<p><b>Description: </b>{{recipe.description}}</p>
-			<p><b>Categories:</b>
-				{% for category in selected_categories %}
-					{% if selected_categories|length > 1 and forloop.counter < selected_categories|length %}
-						{{category.category}},
-					{% else %}
-						{{category.category}}
-					{% endif %}
+	<div class="container">
+		<div class="container-fluid">
+			<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+							<span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+						</button>
+						<a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+						<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
+					</div>
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="{% url 'potluck:index' %}">Home</a></li>
+							<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
+							<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
+							<li><a href="{% url 'potluck:search' %}">Search</a></li>
+							<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<div class="main">
+				<h1>{{recipe.title}}</h1>
+			<div id="info">
+				{% for image in images %}
+				{% if image.recipe == recipe %}
+				<div class="bg">
+					<img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
+				</div>
+				{% endif %}
 				{% endfor %}
-			</p>
-			{% if request.session.id == recipe.creator.id %}
-				<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button>Edit this Recipe</button></a>
-			{% endif %}
+				<div class="info">
+					{% if avg_rating == 'No ratings yet.' %}
+					<p><b>{{avg_rating}}</b></p>
+					{% else %}
+					<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
+					{% endif %}
+					{% if request.session.id != recipe.creator.id and rating %}
+					<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post">
+						{% csrf_token %}
+						<select name="rating">
+							<option value='1'>1</option>
+							<option value='2'>2</option>
+							<option value='3'>3</option>
+							<option value='4'>4</option>
+							<option value='5'>5</option>
+						</select>
+						<input type="submit" value="Rate Meal">
+					</form>
+					{% endif %}
+					{% if request.session.id != recipe.creator.id %}
+					<p><a href="{% url 'potluck:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
+					{% endif %}
+					<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
+					<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>
+					<p><b>Total Time:</b> {{total_time_hour}} hour(s), {{total_time_minute}} minutes.</p>
+					<p><b>Description: </b>{{recipe.description}}</p>
+					<p><b>Categories:</b>
+						{% for category in selected_categories %}
+						{% if selected_categories|length > 1 and forloop.counter < selected_categories|length %}
+						{{category.category}},
+						{% else %}
+						{{category.category}}
+						{% endif %}
+						{% endfor %}
+					</p>
+					{% if request.session.id == recipe.creator.id %}
+					<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit this Recipe</button></a>
+					{% endif %}
+				</div>
+			</div>
+			<p><b>Steps:</b></p>
+			<ol>
+				{% for step in steps %}
+				<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
+				{% endfor %}
+			</ol>
+			<hr>
+			<div id="ingredient">
+
+			</div>
+				{% if comments %}
+			<h3> Comments </h3>
+			<div id="comments">
+				{% for comment in comments %}
+				<p>{{comment.created_at}} <b>{{ comment.user.first_name }}</b> commented: </p>
+				<p class='comment'>{{ comment.comment }}</p>
+				{% endfor %}
+				{% endif %}
+			</div>
+			<h4>Add a comment:</h4>
+			<form action="{% url 'potluck:show_recipe' recipe_id=recipe.id %}" method="post" class='form-horizontal'>
+				{% csrf_token %}
+				<div class="form-group">
+					<textarea class='from-control' name='comment' rows="5" cols="25" placeholder="Write a comment..."></textarea>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Post" class='btn btn-danger'>
+				</div>
+			</form>
 		</div>
 	</div>
-	<p><b>Steps:</b></p>
-	<ol>
-		{% for step in steps %}
-		<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
-		{% endfor %}
-	</ol>
-	<hr>
-	<div id="ingredient">
-
-	</div>
-	<div id="comments">
-		{% if comments %}
-			{% for comment in comments %}
-			<p>{{comment.created_at}}: {{ comment.user.first_name }} wrote... </p>
-			<p>{{ comment.comment }}</p>
-			{% endfor %}
-		{% endif %}
-	</div>
-	<form action="{% url 'potluck:show_recipe' recipe_id=recipe.id %}" method="post">
-	{% csrf_token %}
-	<textarea name='comment' rows="5" cols="25" placeholder="Write a comment..."></textarea>
-	<input type="submit" value="Post">
-	</form>
+</div>
 
 </body>
 </html>
