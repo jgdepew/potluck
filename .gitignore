@@ -1,5 +1,3 @@
 *.pyc
-*.jpeg
-*.jpg
-*.png
+media/
 db.sqlite3

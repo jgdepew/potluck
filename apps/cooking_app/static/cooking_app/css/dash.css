@@ -17,7 +17,7 @@ body{
 
 .main{
   margin-top: 3.75em;
-  width: 75%;
+  width: 80%;
   background-color: white;
   height: 100%;
   /*border-left: 1px solid black;
@@ -50,18 +50,12 @@ h2{
   display: inline-block;
 }
 
-.bg img {
-  vertical-align: top;
-  max-height: 100%;
-  max-width: 100%;
-}
 
 .recipe_info{
   margin-left: 1em;
 }
 
 .bg{
-  /*background-color: gray;*/
   width: 10em;
   height: 10em;
   text-align: center;
@@ -71,8 +65,16 @@ h2{
   display:inline-block;
   vertical-align: top;
   border: 1px #dedcdb solid;
+  position: relative;
+  line-height: 7.5em;
   /*box-shadow: .125em .25em 1em;*/
 
+}
+
+.bg img {
+  vertical-align: middle;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .recipe{
@@ -90,7 +92,8 @@ h2{
 
 #recipes{
   display: inline-block;
-  max-width: 60%;
+  margin-right: 6em;
+  max-width: 70%;
 }
 
 #sidebar{

@@ -7,40 +7,6 @@
 	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
 	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
-<style type="text/css">
-	a:visited {
-		color: black;
-	}
-	#header li{
-		list-style: none;
-		display: inline-block;
-		margin-right: 20px;
-	}
-	#header{
-		display:inline-block;
-		text-align: center;
-		width: 100%;
-	}
-	#title {
-		font-size: 2em;
-	}
-	#name {
-		font-size: 1.25em;
-		text-decoration: none;
-	}
-	#user_recipe, #saved_recipe{
-		margin-left: 25px
-	}
-	img, .info{
-		display: inline-block;
-	}
-	#recipe_img {
-		vertical-align: top;
-	}
-	a:link{
-		color: black;
-	}
-</style>
 <body>
 	<div class="container">
 		<div class="container-fluid">
@@ -81,16 +47,20 @@
 					<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
 					{% endif %}
 					{% if request.session.id != recipe.creator.id and rating %}
-					<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post">
+					<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post" class='form-inline'>
 						{% csrf_token %}
-						<select name="rating">
-							<option value='1'>1</option>
-							<option value='2'>2</option>
-							<option value='3'>3</option>
-							<option value='4'>4</option>
-							<option value='5'>5</option>
-						</select>
-						<input type="submit" value="Rate Meal">
+						<div class="form-group">
+							<select name="rating" class='form-control'>
+								<option value='1'>1</option>
+								<option value='2'>2</option>
+								<option value='3'>3</option>
+								<option value='4'>4</option>
+								<option value='5'>5</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Rate Meal" class='btn btn-danger'>
+						</div>
 					</form>
 					{% endif %}
 					{% if request.session.id != recipe.creator.id %}
@@ -114,17 +84,17 @@
 					{% endif %}
 				</div>
 			</div>
-			<p><b>Steps:</b></p>
-			<ol>
-				{% for step in steps %}
-				<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
-				{% endfor %}
-			</ol>
 			<hr>
-			<div id="ingredient">
-
-			</div>
+			<div class="steps">
+				<p><b>Steps:</b></p>
+				<ol>
+					{% for step in steps %}
+					<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
+					{% endfor %}
+				</ol>
+				<hr>
 				{% if comments %}
+			</div>
 			<h3> Comments </h3>
 			<div id="comments">
 				{% for comment in comments %}
