@@ -4,6 +4,16 @@ from django.db import models
 from django.contrib import messages
 import bcrypt
 
+# get things ready for json
+# class ItemManager(models.Manager):
+#     def as_dict(self, item):
+#         return {
+#             'id': item.id,
+#             'objective': item.objective,
+#             'createdAt': item.createdAt.isoformat(),
+#             'updatedAt': item.updatedAt.isoformat()
+#         }
+
 # Create your models here.
 class UserManager(models.Manager):
 	def RegisterValidation(self, form_info):
