@@ -16,16 +16,16 @@
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 							<span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
 						</button>
-						<a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+						<a class="navbar-brand" href="{% url 'main:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
 						<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
-							<li><a href="{% url 'potluck:index' %}">Home</a></li>
-							<li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-							<li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-							<li><a href="{% url 'potluck:search' %}">Search</a></li>
-							<li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+							<li><a href="{% url 'main:index' %}">Home</a></li>
+							<li><a href="{% url 'main:show_user' id=request.session.id %}">Profile</a></li>
+							<li><a href="{% url 'main:add_recipe' %}">Add a Recipe</a></li>
+							<li><a href="{% url 'main:search' %}">Search</a></li>
+							<li><a href="{% url 'loginReg:logout' %}">Logout</a></li>
 						</ul>
 					</div>
 				</div>
@@ -47,7 +47,7 @@
 					<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
 					{% endif %}
 					{% if request.session.id != recipe.creator.id and rating %}
-					<form action="{% url 'potluck:add_rating' recipe_id=recipe.id%}" method="post" class='form-inline'>
+					<form action="{% url 'main:add_rating' recipe_id=recipe.id%}" method="post" class='form-inline'>
 						{% csrf_token %}
 						<div class="form-group">
 							<select name="rating" class='form-control'>
@@ -64,7 +64,7 @@
 					</form>
 					{% endif %}
 					{% if request.session.id != recipe.creator.id %}
-					<p><a href="{% url 'potluck:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
+					<p><a href="{% url 'main:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
 					{% endif %}
 					<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 					<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>
@@ -80,7 +80,7 @@
 						{% endfor %}
 					</p>
 					{% if request.session.id == recipe.creator.id %}
-					<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit this Recipe</button></a>
+					<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit this Recipe</button></a>
 					{% endif %}
 				</div>
 			</div>
@@ -104,7 +104,7 @@
 				{% endif %}
 			</div>
 			<h4>Add a comment:</h4>
-			<form action="{% url 'potluck:show_recipe' recipe_id=recipe.id %}" method="post" class='form-horizontal'>
+			<form action="{% url 'main:show_recipe' recipe_id=recipe.id %}" method="post" class='form-horizontal'>
 				{% csrf_token %}
 				<div class="form-group">
 					<textarea class='from-control' name='comment' rows="5" cols="25" placeholder="Write a comment..."></textarea>

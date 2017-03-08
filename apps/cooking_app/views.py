@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, reverse
-from .models import User, Comment, Recipe, Ingredient, Measurement, Step, RecipePic, Rating, UserPic, Category
+from .models import Comment, Recipe, Ingredient, Measurement, Step, RecipePic, Rating, Category
+from ..loginRegistration_app.models import User, UserPic
 from django.contrib import messages
 import datetime
 from django.http import JsonResponse
@@ -8,35 +9,13 @@ from django.db.models import Q
 
 
 # Create your views here.
-def login(request):
-	if request.method == "POST":
-		results = User.objects.LoginValidation(request.POST)
-		if len(results[0])<1:
-			request.session['id'] = results[1]
-			request.session['user_level'] = results[2]
-			return redirect(reverse('potluck:index'))
-		else:
-			for error in results:
-				messages.error(request, error)
-	return render(request, 'cooking_app/login.html')
-
-
-def register(request):
-	if request.method == "POST":
-		results = User.objects.RegisterValidation(request.POST)
-		if len(results[0])<1:
-			request.session['id'] = results[1]
-			request.session['user_level'] = results[2]
-			return redirect(reverse('potluck:index'))
-		else:
-			for error in results:
-				messages.error(request, error)
-	return render(request, 'cooking_app/register.html')
+def welcome(request):
+	return redirect("loginReg:login")
 
 
 def index(request):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 	context ={
 		'user': User.objects.get(id=request.session['id']),
 		'recipes': Recipe.objects.all().order_by('-updated_at'),
@@ -47,7 +26,7 @@ def index(request):
 
 def show_recipe(request, recipe_id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	if request.method == 'POST':
 
@@ -91,11 +70,11 @@ def show_recipe(request, recipe_id):
 
 def add_recipe(request):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	if request.method == 'POST': # if 'POST' we are trying to add something, else trying to display form to add
 		if len(Recipe.objects.validateRecipe(request.POST))>0: #run validations. returns errors if failed
-			return redirect(reverse('potluck:add_recipe'))
+			return redirect('main:add_recipe')
 		#create the recipe if validations passed
 		recipe = Recipe.objects.create(title=request.POST['title'], creator=User.objects.get(id=request.session['id']), description=request.POST['description'], prep_time_hour=request.POST['prep_time_hour'], prep_time_minute=request.POST['prep_time_minute'], cook_time_hour=request.POST['cook_time_hour'], cook_time_minute=request.POST['cook_time_minute'])
 		Category.objects.addCategory(request.POST, recipe)
@@ -105,13 +84,13 @@ def add_recipe(request):
 			RecipePic.objects.create(title=request.POST['title'], image=request.FILES['image'], recipe=recipe)
 			# RecipePic.objects.create(title=request.POST['title'], image=request.FILES['file'])
 		#redirect to edit page so user can add steps to recipe
-		return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': recipe.id}))
+		return redirect(reverse('main:edit_recipe', kwargs={'recipe_id': recipe.id}))
 	return render(request, 'cooking_app/add_recipe.html', {'user': User.objects.get(id=request.session['id']), 'categories': Category.objects.create_categories()})
 
 
 def edit_recipe(request, recipe_id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	if request.method == 'POST': # if 'POST' we are trying to update recipe, else trying to display edit page
 		print request.FILES
@@ -119,7 +98,7 @@ def edit_recipe(request, recipe_id):
 		# 	RecipePic.objects.update(recipe_id, request.Files)
 		if 'title' in request.POST:
 			if len(Recipe.objects.validateRecipe(request.POST)) > 0: # run validations. returns errors if failed
-				return redirect(reverse('potluck:edit_recipe'))
+				return redirect('main:edit_recipe')
 			else:
 				Recipe.objects.update(request.POST, recipe_id) # passed validation, not update
 
@@ -147,31 +126,31 @@ def edit_recipe(request, recipe_id):
 
 def delete_recipe(request, recipe_id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	Recipe.objects.get(id=recipe_id).delete()
-	return redirect('potluck:index')
+	return redirect('main:index')
 
 
 def add_step(request):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	step = Step.objects.add_step(request.POST) # runs code to validate step and return step after creation
-	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
+	return redirect(reverse('main:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
 def update_step(request, step_id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	step = Step.objects.update_step(request.POST, step_id) # runs code to validate step and return step after update
-	return redirect(reverse('potluck:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
+	return redirect(reverse('main:edit_recipe', kwargs={'recipe_id': step.recipe.id}))
 
 
 def delete_step(request, step_id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	Step.objects.get(id=step_id).delete()
 	return JsonResponse({'to_delete': step_id})
@@ -179,7 +158,7 @@ def delete_step(request, step_id):
 
 def show_user(request, id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	if request.method == 'POST':
 		if 'image' in request.FILES:
@@ -201,33 +180,30 @@ def show_user(request, id):
 	return render(request, 'cooking_app/show_user.html', context)
 
 
-def logout(request):
-	for key in request.session.keys():
-		del request.session[key]
-	return redirect(reverse('potluck:login'))
-
-
 def add_rating(request, recipe_id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	user_id = request.session['id']
 	Rating.objects.add_rating(recipe_id, user_id, request.POST)
-	return redirect(reverse('potluck:show_recipe', kwargs={'recipe_id':recipe_id}))
+	return redirect(reverse('main:show_recipe', kwargs={'recipe_id':recipe_id}))
 
 
 def save_recipe(request, recipe_id):
 	if 'id' not in request.session:
-		return redirect(reverse('potluck:login'))
+		return redirect('loginReg:login')
 
 	user = User.objects.get(id=request.session['id'])
 	recipe = Recipe.objects.get(id=recipe_id)
 	recipe.user.add(user)
 	recipe.save()
-	return redirect(reverse('potluck:show_recipe', kwargs={'recipe_id':recipe_id}))
+	return redirect(reverse('main:show_recipe', kwargs={'recipe_id':recipe_id}))
 
 
 def search(request):
+	if 'id' not in request.session:
+		return redirect('loginReg:login')
+
 	if request.method == 'POST':
 		if 'category' in request.POST:
 			# results = Recipe.objects.filter()

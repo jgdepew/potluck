@@ -50,16 +50,16 @@
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                                 <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                             </button>
-                            <a class="navbar-brand" href="{% url 'potluck:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
+                            <a class="navbar-brand" href="{% url 'main:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
             				<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
                         </div>
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="{% url 'potluck:index' %}">Home</a></li>
-                                <li><a href="{% url 'potluck:show_user' id=request.session.id %}">Profile</a></li>
-                                <li><a href="{% url 'potluck:add_recipe' %}">Add a Recipe</a></li>
-                                <li><a href="{% url 'potluck:search' %}">Search</a></li>
-                                <li><a href="{% url 'potluck:logout' %}">Logout</a></li>
+                                <li><a href="{% url 'main:index' %}">Home</a></li>
+                                <li><a href="{% url 'main:show_user' id=request.session.id %}">Profile</a></li>
+                                <li><a href="{% url 'main:add_recipe' %}">Add a Recipe</a></li>
+                                <li><a href="{% url 'main:search' %}">Search</a></li>
+                                <li><a href="{% url 'loginReg:logout' %}">Logout</a></li>
                             </ul>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                     {% endfor %} -->
                     <div id="update_recipe">
                         <div id="form">
-                            <form action="{% url 'potluck:edit_recipe' recipe_id=recipe.id%}" method="post" class='form-horizontal edit'>
+                            <form action="{% url 'main:edit_recipe' recipe_id=recipe.id%}" method="post" class='form-horizontal edit'>
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label>Recipe Title: <input type="text" name="title" value="{{recipe.title}}" class='form-control'></label>
@@ -109,7 +109,7 @@
                                 </div>
                                 <!-- <input type="submit" value="Update Recipe"> -->
                             </form>
-                            <a href="{% url 'potluck:delete_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Delete Recipe</button></a> <a href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>View Recipe</button></a>
+                            <a href="{% url 'main:delete_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Delete Recipe</button></a> <a href="{% url 'main:show_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>View Recipe</button></a>
                             <div class="foodpic">
                                 {% for image in images %}
                                 {% if image.recipe == recipe %}
@@ -120,7 +120,7 @@
                         </div>
                         <!-- add form to update food pic -->
                     </div>
-                    <!--         <form enctype="multipart/form-data" action="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}" method="post">
+                    <!--         <form enctype="multipart/form-data" action="{% url 'main:edit_recipe' recipe_id=recipe.id %}" method="post">
                     {% csrf_token %}
                     <label>Change Image: <input type="file" name="image"></label><br>
                     <input type="submit" value="Update Image">
@@ -130,7 +130,7 @@
                         <h3>Update your steps</h3>
                         {% for step in steps %}
                         <div id="div_{{step.id}}" class="step">
-                            <form id='{{step.id}}' class='update_step form-horizontal' action="{% url 'potluck:update_step' step_id=step.id%}" method="post">
+                            <form id='{{step.id}}' class='update_step form-horizontal' action="{% url 'main:update_step' step_id=step.id%}" method="post">
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label>Step #{{ forloop.counter }}</label>
@@ -162,7 +162,7 @@
                                     <input type="hidden" name="step_id" value="{{step.id}}">
                                 </div>
                                 <div class="form-group">
-                                    <a class='link' href="{% url 'potluck:delete_step' step_id=step.id %}"><button class='btn btn-danger'>Delete Step</button></a>
+                                    <a class='link' href="{% url 'main:delete_step' step_id=step.id %}"><button class='btn btn-danger'>Delete Step</button></a>
                                     <!-- <input type="submit" value="Update Step"> -->
                                 </div>
                             </form>
@@ -171,7 +171,7 @@
                         <hr>
                         <div id="new_step">
                             <h3>Add a Step</h3>
-                            <form id='new_step_form' class='new_step form-horizontal' action="{% url 'potluck:add_step' %}" method="post">
+                            <form id='new_step_form' class='new_step form-horizontal' action="{% url 'main:add_step' %}" method="post">
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label>Measurement: <select name='measurement'>

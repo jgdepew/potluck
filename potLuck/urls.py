@@ -20,7 +20,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('apps.cooking_app.urls', namespace='potluck'))
+    url(r'^login/', include('apps.loginRegistration_app.urls', namespace='loginReg')),
+    url(r'^', include('apps.cooking_app.urls', namespace='main'))
 ]
 
 if settings.DEBUG is True:
