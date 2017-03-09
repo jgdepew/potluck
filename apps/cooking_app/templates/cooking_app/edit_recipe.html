@@ -11,34 +11,66 @@
         <script src="{% static 'cooking_app/js/js.cookie.js' %}"></script>
         <script>
             $(document).ready(function(){
-                $('#new_step form').submit(function(e){
+                $('#form form').focusout(function(e){
+                    console.log('ran');
+                    e.preventDefault()
+                    $.post(this.action, $(this).serialize(), function(serverResponse){
+                        //TODO: Show errors
+                    });
+                })
+                $('table').on('submit', '#new_step_form', function(e){
+                    console.log('add');
                     e.preventDefault();
+                        $.post(this.action, $(this).serialize(), function(serverResponse){
+                            // $('body').html($(serverResponse).find('body').html());
+                            $('body').html(serverResponse);
+                        });
+                });
+                // $('#new_step_form').submit(function(e){
+                //     e.preventDefault();
+                //     $.post(this.action, $(this).serialize(), function(serverResponse){
+                //         $('body').html(serverResponse)
+                //     });
+                // })
+                $('table').on('focusout', '#update_recipe form', function(){
                     $.post(this.action, $(this).serialize(), function(serverResponse){
-                        $('body').html(serverResponse)
-                    })
+                        //do nothing
+                    });
                 })
-                $('#update_recipe form').focusout(function(e){
-                    e.preventDefault();
-                    $.post(this.action, $(this).serialize(), function(serverResponse){
-                        $('body').html(serverResponse)
-                    })
-                })
-                $( ".update_step" ).focusout(function() {
-                    // $(selector).post(URL,data,function(data,status,xhr),dataType)
-                    // var id = this.id
-                    $.post(this.action, $(this).serialize(), function(serverResponse){
-                        var ParsedElements = jQuery.parseHTML(serverResponse);
-                        // $('#'+id).html($("<html/>").html(ParsedElements).find('#'+id));
-                        // $('body').html(serverResponse)
-                    })
-                })
-                $('.link').click(function(e){
+                // $('#update_recipe form').focusout(function(){
+                //     $.post(this.action, $(this).serialize(), function(serverResponse){
+                        //do nothing
+                //     });
+                // })
+                //update recipe
+                $('table').on('focusout', 'td*', function(){
+                    if (!$(this).parent().find('form').hasClass('new_step')){  //test to see if it's updating step
+                        $.post($(this).parent().find('form')[0].action, $(this).parent().find('form').serialize(), function(serverResponse){
+                            //do nothing with response
+                        });
+                    }
+                });
+                // $( "td*" ).focusout(function() {
+                //     if (!$(this).parent().find('form').hasClass('new_step')){  //test to see if it's updating step
+                //         $.post($(this).parent().find('form')[0].action, $(this).parent().find('form').serialize(), function(serverResponse){
+                //             //do nothing with response
+                //         });
+                //     }
+                // });
+                //delete step
+                $('table').on('click', '.link', function(e){
                     e.preventDefault();
                     $.get($(this).attr('href'), function(serverResponse){
-                        $('#div_'+serverResponse.to_delete).remove()
-                    })
+                        $('#tr_'+serverResponse.to_delete).remove();
+                    });
                 })
-            })
+                // $('.link').click(function(e){
+                //     e.preventDefault();
+                //     $.get($(this).attr('href'), function(serverResponse){
+                //         $('#tr_'+serverResponse.to_delete).remove();
+                //     });
+                // });
+            });
         </script>
     </head>
     <body>
@@ -69,16 +101,13 @@
                         <h1>Edit your Recipe!</h1>
                         <p class='para'>Here you are able to edit you're own recipe and add anything that you may have missed!</p>
                     </div>
+
                     {% if messages %}
-                    {% for message in messages %}
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                    {% endfor %}
+                        {% for message in messages %}
+                            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                        {% endfor %}
                     {% endif %}
-                    <!-- {% for image in images %}
-                    {% if image.recipe == recipe %}
-                    <img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
-                    {% endif %}
-                    {% endfor %} -->
+
                     <div id="update_recipe">
                         <div id="form">
                             <form action="{% url 'main:edit_recipe' recipe_id=recipe.id%}" method="post" class='form-horizontal edit'>
@@ -100,105 +129,115 @@
                                 <div class="form-group">
                                     <p><label>Categories:</label></p>
                                     {% for category in categories %}
-                                    {% if category in selected_categories %}
-                                    <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}" checked> {{category.category}}
-                                    {% else %}
-                                    <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
-                                    {% endif %}
+                                        {% if category in recipe.categories.all %}
+                                            <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}" checked> {{category.category}}
+                                        {% else %}
+                                            <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
-                                <!-- <input type="submit" value="Update Recipe"> -->
                             </form>
-                            <a href="{% url 'main:delete_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Delete Recipe</button></a> <a href="{% url 'main:show_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>View Recipe</button></a>
+                            <a href="{% url 'main:delete_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Delete Recipe</button></a> <a href="{% url 'main:show_recipe' recipe_id=recipe.id %}"><button class='btn btn-success'>View Recipe</button></a>
                             <div class="foodpic">
-                                {% for image in images %}
-                                {% if image.recipe == recipe %}
-                                <img id="recipe_img" class='img-responsive' src="/{{image.image.url}}">
+                                {% if recipe.recipe_image %}
+                                    <img id="recipe_img" class='img-responsive' src="/{{recipe.recipe_image.image.url}}">
                                 {% endif %}
-                                {% endfor %}
                             </div>
                         </div>
                         <!-- add form to update food pic -->
+                        <!--         <form enctype="multipart/form-data" action="{% url 'main:edit_recipe' recipe_id=recipe.id %}" method="post">
+                        {% csrf_token %}
+                        <label>Change Image: <input type="file" name="image"></label><br>
+                        <input type="submit" value="Update Image">
+                        </form> -->
                     </div>
-                    <!--         <form enctype="multipart/form-data" action="{% url 'main:edit_recipe' recipe_id=recipe.id %}" method="post">
-                    {% csrf_token %}
-                    <label>Change Image: <input type="file" name="image"></label><br>
-                    <input type="submit" value="Update Image">
-                    </form> -->
                     <hr>
                     <div id="steps">
                         <h3>Update your steps</h3>
-                        {% for step in steps %}
-                        <div id="div_{{step.id}}" class="step">
-                            <form id='{{step.id}}' class='update_step form-horizontal' action="{% url 'main:update_step' step_id=step.id%}" method="post">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label>Step #{{ forloop.counter }}</label>
-                                    <label>Measurement: <select name='measurement'>
-                                        {% for measurement in measurements %}
-                                        {% if measurement ==  step.measurement %}
-                                        <option selected="selected" value="{{measurement.id}}">{{measurement.measurement}}</option>
-                                        {% else %}
-                                        <option value="{{measurement.id}}">{{measurement.measurement}}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select></label>
-                                    <input type="text" name="new_measurement" placeholder="Add new measurement" class='form-control'>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ingredient: <select name='ingredient'>
-                                        {% for ingredient in ingredients %}
-                                        {% if ingredient ==  step.ingredient %}
-                                        <option selected="selected" value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
-                                        {% else %}
-                                        <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select></label>
-                                    <input type="text" name="new_ingredient" placeholder="Add new ingredient" class='form-control'>
-                                </div>
-                                <div class="form-group">
-                                    <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25" class='form-control'>{{step.description}}</textarea></label>
-                                    <input type="hidden" name="step_id" value="{{step.id}}">
-                                </div>
-                                <div class="form-group">
-                                    <a class='link' href="{% url 'main:delete_step' step_id=step.id %}"><button class='btn btn-danger'>Delete Step</button></a>
-                                    <!-- <input type="submit" value="Update Step"> -->
-                                </div>
-                            </form>
-                        </div>
-                        {% endfor %}
-                        <hr>
-                        <div id="new_step">
-                            <h3>Add a Step</h3>
-                            <form id='new_step_form' class='new_step form-horizontal' action="{% url 'main:add_step' %}" method="post">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label>Measurement: <select name='measurement'>
-                                        {% for measurement in measurements %}
-                                        <option value="{{measurement.id}}">{{measurement.measurement}}</option>
-                                        {% endfor %}
-                                    </select></label>
-                                    <input type="text" name="new_measurement" placeholder="Add new measurement" class='form-control'>
-                                </div>
-                                <div class="form-group">
-                                    <label>Step #{{step_count}}</label>
-                                    <label>Ingredient: <select name='ingredient'>
-                                        {% for ingredient in ingredients %}
-                                        <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
-                                        {% endfor %}
-                                    </select></label>
-                                    <input type="text" name="new_ingredient" placeholder="Add new ingredient" class='form-control'>
-                                </div>
-                                <div class="form-group">
-                                    <label><span class="vert_align">Description:</span> <textarea name="description" rows="3" cols="25" class='form-control'></textarea></label>
-                                    <input type="hidden" name="recipe_id" value="{{recipe.id}}">
-                                </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Add Step" class='btn btn-danger'>
-                                </div>
-                            </form>
-                        </div>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Step #</th>
+                                    <th>Measurement</th>
+                                    <th>Ingredient</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for step in recipe.steps.all %}
+                                    <tr id='tr_{{step.id}}'>
+                                        <form id='{{step.id}}' class='update_step form-horizontal' action="{% url 'main:update_step' step_id=step.id%}" method="post">
+                                            {% csrf_token %}
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                <select name='measurement'>
+                                                    {% for measurement in measurements %}
+                                                        {% if measurement ==  step.measurement %}
+                                                            <option selected="selected" value="{{measurement.id}}">{{measurement.measurement}}</option>
+                                                        {% else %}
+                                                            <option value="{{measurement.id}}">{{measurement.measurement}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                <input type="text" name="new_measurement" placeholder="Add new measurement" class='form-control'>
+                                            </td>
+                                            <td>
+                                                <select name='ingredient'>
+                                                    {% for ingredient in ingredients %}
+                                                        {% if ingredient == step.ingredient %}
+                                                            <option selected="selected" value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
+                                                        {% else %}
+                                                            <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                <input type="text" name="new_ingredient" placeholder="Add new ingredient" class='form-control'>
+                                            </td>
+                                            <td>
+                                                <textarea name="description" rows="2" cols="25" class='form-control'>{{step.description}}</textarea></label>
+                                                <input type="hidden" name="step_id" value="{{step.id}}">
+                                            </td>
+                                            <td>
+                                                <a class='link' href="{% url 'main:delete_step' step_id=step.id %}"><button class='btn btn-danger'>Delete Step</button></a>
+                                            </td>
+                                        </tr>
+                                    </form>
+                                {% endfor %}
+
+                                <tr>
+                                    <form id='new_step_form' class='new_step form-horizontal' action="{% url 'main:add_step' %}" method="post">
+                                        {% csrf_token %}
+                                        <td>Add New</td>
+                                        <td>
+                                            <select name='measurement'>
+                                                {% for measurement in measurements %}
+                                                    <option value="{{measurement.id}}">{{measurement.measurement}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <input type="text" name="new_measurement" placeholder="Add new measurement" class='form-control'>
+                                        </td>
+                                        <td>
+                                            <select name='ingredient'>
+                                                {% for ingredient in ingredients %}
+                                                    <option value="{{ingredient.id}}">{{ingredient.ingredient}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <input type="text" name="new_ingredient" placeholder="Add new ingredient" class='form-control'>
+                                        </td>
+                                        <td>
+                                            <textarea name="description" rows="2" cols="25" class='form-control'></textarea>
+                                            <input type="hidden" name="recipe_id" value="{{recipe.id}}">
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="submit" value="Add Step" class='btn btn-success'>
+                                            </div>
+                                        </td>
+                                    </form>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

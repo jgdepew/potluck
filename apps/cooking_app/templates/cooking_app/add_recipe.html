@@ -37,9 +37,9 @@
                         <hr>
                     </div>
                     {% if messages %}
-                    {% for message in messages %}
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                    {% endfor %}
+                        {% for message in messages %}
+                            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                        {% endfor %}
                     {% endif %}
                     <form enctype="multipart/form-data" action="{% url 'main:add_recipe' %}" method="post" class='form-horizontal'>
                         {% csrf_token %}
@@ -60,10 +60,10 @@
                         <div class="form-group">
                             <label>Select a Category:</label><br>
                             {% for category in categories %}
-                            {% if forloop.counter|divisibleby:4 %}
-                            <br>
-                            {% endif %}
-                            <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
+                                {% if forloop.counter|divisibleby:4 %}
+                                    <br>
+                                {% endif %}
+                                <input class='checkbox inline' type="checkbox" name="{{category.category}}" value="{{category.id}}"> {{category.category}}
                             {% endfor %}
                         </div>
 

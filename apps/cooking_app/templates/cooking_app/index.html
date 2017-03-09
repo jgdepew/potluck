@@ -15,7 +15,7 @@
                     <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
                 <a class="navbar-brand" href="{% url 'main:index' %}"><img src="../../static/cooking_app/images/gold1.png" alt=""></a>
-								<p class='navbar-text navbar-left'>Hello, {{user.first_name}}!</p>
+								<p class='navbar-text navbar-left'>Hello, {{user_name}}!</p>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
@@ -36,13 +36,11 @@
 			{% for recipe in recipes %}
 				<div class="recipe col-xs-12">
 					<h3>{{recipe.title}}</h3>
-					{% for image in images %}
-						{% if image.recipe == recipe %}
+					{% if recipe.recipe_image %}
 						<div class="bg">
-							<img class='recipe_img' src="/{{image.image.url}}">
+							<img class='recipe_img' src="/{{recipe.recipe_image.image.url}}">
 						</div>
-						{% endif %}
-					{% endfor %}
+					{% endif %}
 					<div class='recipe_info'>
 						<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 						<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hour(s), {{recipe.cook_time_minute}} minutes.</p>

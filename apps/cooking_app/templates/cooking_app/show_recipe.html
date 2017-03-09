@@ -33,50 +33,48 @@
 			<div class="main">
 				<h1>{{recipe.title}}</h1>
 			<div id="info">
-				{% for image in images %}
-				{% if image.recipe == recipe %}
-				<div class="bg">
-					<img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
-				</div>
+				{% if recipe.recipe_image %}
+					<div class="bg">
+						<img id="recipe_img" style="width: auto; height: 150px;" src="/{{recipe.recipe_image.image.url}}">
+					</div>
 				{% endif %}
-				{% endfor %}
 				<div class="info">
 					{% if avg_rating == 'No ratings yet.' %}
-					<p><b>{{avg_rating}}</b></p>
+						<p><b>{{avg_rating}}</b></p>
 					{% else %}
-					<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
+						<p><b>Rating: {{avg_rating|floatformat}} / 5</b></p>
 					{% endif %}
 					{% if request.session.id != recipe.creator.id and rating %}
-					<form action="{% url 'main:add_rating' recipe_id=recipe.id%}" method="post" class='form-inline'>
-						{% csrf_token %}
-						<div class="form-group">
-							<select name="rating" class='form-control'>
-								<option value='1'>1</option>
-								<option value='2'>2</option>
-								<option value='3'>3</option>
-								<option value='4'>4</option>
-								<option value='5'>5</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<input type="submit" value="Rate Meal" class='btn btn-danger'>
-						</div>
-					</form>
+						<form action="{% url 'main:add_rating' recipe_id=recipe.id%}" method="post" class='form-inline'>
+							{% csrf_token %}
+							<div class="form-group">
+								<select name="rating" class='form-control'>
+									<option value='1'>1</option>
+									<option value='2'>2</option>
+									<option value='3'>3</option>
+									<option value='4'>4</option>
+									<option value='5'>5</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<input type="submit" value="Rate Meal" class='btn btn-danger'>
+							</div>
+						</form>
 					{% endif %}
 					{% if request.session.id != recipe.creator.id %}
-					<p><a href="{% url 'main:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
+						<p><a href="{% url 'main:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
 					{% endif %}
 					<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 					<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>
 					<p><b>Total Time:</b> {{total_time_hour}} hour(s), {{total_time_minute}} minutes.</p>
 					<p><b>Description: </b>{{recipe.description}}</p>
 					<p><b>Categories:</b>
-						{% for category in selected_categories %}
-						{% if selected_categories|length > 1 and forloop.counter < selected_categories|length %}
-						{{category.category}},
-						{% else %}
-						{{category.category}}
-						{% endif %}
+						{% for category in recipe.categories.all %}
+							{% if recipe.categories.all|length > 1 and forloop.counter < recipe.categories.all|length %}
+								{{category.category}},
+							{% else %}
+								{{category.category}}
+							{% endif %}
 						{% endfor %}
 					</p>
 					{% if request.session.id == recipe.creator.id %}
@@ -88,20 +86,18 @@
 			<div class="steps">
 				<p><b>Steps:</b></p>
 				<ol>
-					{% for step in steps %}
-					<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}}; <br>{{step.description}}</li>
+					{% for step in recipe.steps.all %}
+					<li>{{step.measurement.measurement}} of {{step.ingredient.ingredient}} <br>{{step.description}}</li>
 					{% endfor %}
 				</ol>
 				<hr>
-				{% if comments %}
 			</div>
 			<h3> Comments </h3>
 			<div id="comments">
-				{% for comment in comments %}
-				<p>{{comment.created_at}} <b>{{ comment.user.first_name }}</b> commented: </p>
-				<p class='comment'>{{ comment.comment }}</p>
+				{% for comment in recipe.comments.all %}
+					<p>{{comment.created_at}} <b>{{ comment.user.first_name }}</b> commented: </p>
+					<p class='comment'>{{ comment.comment }}</p>
 				{% endfor %}
-				{% endif %}
 			</div>
 			<h4>Add a comment:</h4>
 			<form action="{% url 'main:show_recipe' recipe_id=recipe.id %}" method="post" class='form-horizontal'>

@@ -37,90 +37,87 @@
 					<hr>
 				</div>
 				<h2>{{user.first_name}} {{user.last_name}}</h2>
-				{% if not user_pic == '' %}
-				<img style="width: auto; height: 150px;" src="/{{user_pic.image.url}}">
+
+				{% if user.pic %}
+					<img style="width: auto; height: 150px;" src="/{{user.pic.image.url}}">
 				{% else %}
-				<p style="font-size: 10px; ">No profile picture</p>
+					<p style="font-size: 10px; ">No profile picture</p>
 				{% endif %}
+
 				{% if user == self %}
-				<form enctype="multipart/form-data" action="{% url 'main:show_user' id=user.id %}" method="post">
-					{% csrf_token %}
-					<label>Profile Pic: <input type="file" name="image"></label><br>
-					<div class="form-group">
-						<input type="submit" value="Add Profile Pic" class='btn btn-danger'>
-					</div>
-				</form>
+					<form enctype="multipart/form-data" action="{% url 'main:show_user' id=user.id %}" method="post">
+						{% csrf_token %}
+						<label>Profile Pic: <input type="file" name="image"></label><br>
+						<div class="form-group">
+							<input type="submit" value="Add Profile Pic" class='btn btn-danger'>
+						</div>
+					</form>
 				{% endif %}
+
 				<h2>{{user.first_name}}'s Recipes</h2>
 				<!-- <hr class='recipes_hr'> -->
 				{% if not recipes %}
 						<p class='none'>User has uploaded no recipes</p>
 				{% endif %}
 				<div id="user_recipe">
-						{% for recipe in recipes %}
+						{% for recipe in user.created_recipes.all %}
+							<div class="recipe">
+								<div class="tack">
+									<img class='tack' src="../../static/cooking_app/images/tack.png" alt="">
+								</div>
+								<h3 class='recipe_title'>{{recipe.title}}</h3>
+								{% if recipe.recipe_image %}
+									<div class="bg">
+										<img class="recipe_img" style="width: auto; height: 150px;" src="/{{recipe.recipe_image.image.url}}">
+									</div>
+								{% endif %}
+								<div class="user_recipe_info">
+									<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+									<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+									<p><a class='ingredient' href="{% url 'main:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+									{% if request.session.id == recipe.creator.id %}
+									<div class="form-group">
+										<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
+									</div>
+									{% endif %}
+								</div>
+								<br>
+							</div>
+							<hr>
+						{% endfor %}
+				</div>
+
+				{% if user.others.all.count > 0 %}
+					<h2>Saved Recipes</h2>
+				{% endif %}
+
+				<div id="saved_recipe">
+					{% for recipe in user.others.all %}
 						<div class="recipe">
 							<div class="tack">
 								<img class='tack' src="../../static/cooking_app/images/tack.png" alt="">
 							</div>
 							<h3 class='recipe_title'>{{recipe.title}}</h3>
-							{% for image in images %}
-							{% if image.recipe == recipe %}
-							<div class="bg">
-								<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
-							</div>
+							{% if recipe.recipe_image %}
+								<div class="bg">
+									<img class="recipe_img" style="width: auto; height: 150px;" src="/{{recipe.recipe_image.image.url}}">
+								</div>
 							{% endif %}
-							{% endfor %}
 							<div class="user_recipe_info">
 								<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
 								<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+								<p><b>Created By:</b> <a href="{% url 'main:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
 								<p><a class='ingredient' href="{% url 'main:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
 								{% if request.session.id == recipe.creator.id %}
-								<div class="form-group">
-									<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
-								</div>
+									<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
 								{% endif %}
 							</div>
-							<br>
 						</div>
 						<hr>
-						{% endfor %}
-				</div>
-				{% if saves %}
-				<h2>Saved Recipes</h2>
-				<!-- <hr class='recipes_hr'> -->
-				{% endif %}
-				<div id="saved_recipe">
-					{% for recipe in saves %}
-					<div class="recipe">
-						<div class="tack">
-							<img class='tack' src="../../static/cooking_app/images/tack.png" alt="">
-						</div>
-						<h3 class='recipe_title'>{{recipe.title}}</h3>
-						{% for image in images %}
-						{% if image.recipe == recipe %}
-						<div class="bg">
-							<img class="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
-						</div>
-						{% endif %}
-						{% endfor %}
-						<div class="user_recipe_info">
-							<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
-							<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
-							<p><b>Created By:</b> <a href="{% url 'main:show_user' id=recipe.creator.id %}">{{recipe.creator.first_name}} {{recipe.creator.last_name}}</a></p>
-							<p><a class='ingredient' href="{% url 'main:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
-							{% if request.session.id == recipe.creator.id %}
-							<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button>Edit Recipe</button></a>
-							{% endif %}
-						</div>
-					</div>
-					<hr>
 					{% endfor %}
 				</div>
 			</div>
-
 		</div>
 	</div>
-
-
 </body>
 </html>

@@ -144,23 +144,24 @@ class CategoryManager(models.Manager):
 		return Category.objects.all()
 
 	def addCategory(self, form_info, recipe):
+		print form_info
 		categories = Category.objects.all()
 		for category in categories:
 			if category.category in form_info:
-				Category.objects.get(category=category.category).recipe.add(recipe)
+				recipe.categories.add(category)
 
 
 
 class Comment(models.Model):
 	comment = models.TextField()
 	user = models.ForeignKey(User)
-	recipe = models.ForeignKey('Recipe')
+	recipe = models.ForeignKey('Recipe', related_name='comments')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
 class Recipe(models.Model):
 	title = models.CharField(max_length=255)
-	creator = models.ForeignKey(User)
+	creator = models.ForeignKey(User, related_name='created_recipes')
 	user = models.ManyToManyField(User, related_name='others')
 	description = models.CharField(max_length=1000)
 	prep_time_hour = models.IntegerField()
@@ -174,7 +175,7 @@ class Recipe(models.Model):
 class RecipePic(models.Model):
 	title = models.CharField(max_length=50)
 	image = models.ImageField(upload_to='FoodPics')
-	recipe = models.OneToOneField('Recipe', on_delete=models.CASCADE)
+	recipe = models.OneToOneField('Recipe', on_delete=models.CASCADE, related_name='recipe_image')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	objects = RecipePicManager()
@@ -190,7 +191,7 @@ class Measurement(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 
 class Step(models.Model):
-	recipe = models.ForeignKey('Recipe')
+	recipe = models.ForeignKey('Recipe', related_name="steps")
 	measurement = models.ForeignKey('Measurement')
 	ingredient = models.ForeignKey('Ingredient')
 	description = models.CharField(max_length=255)
@@ -199,7 +200,7 @@ class Step(models.Model):
 	objects = StepManager()
 
 class Rating(models.Model):
-	recipe = models.ForeignKey('Recipe')
+	recipe = models.ForeignKey('Recipe', related_name='ratings')
 	user = models.ForeignKey(User)
 	rating = models.IntegerField()
 	created_at = models.DateTimeField(auto_now_add=True)
@@ -207,7 +208,7 @@ class Rating(models.Model):
 	objects = RatingManager()
 
 class Category(models.Model):
-	recipe = models.ManyToManyField('Recipe', related_name='recipe_category')
+	recipe = models.ManyToManyField('Recipe', related_name='categories')
 	category = models.CharField(max_length=75)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)

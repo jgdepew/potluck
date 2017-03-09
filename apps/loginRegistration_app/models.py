@@ -92,7 +92,7 @@ class User(models.Model):
 
 class UserPic(models.Model):
 	image = models.ImageField(upload_to='UserPics')
-	user = models.OneToOneField('User', on_delete=models.CASCADE)
+	user = models.OneToOneField('User', on_delete=models.CASCADE, related_name='pic')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	objects = UserPicManager()

@@ -6,6 +6,23 @@
 	<link rel="stylesheet" href="../../static/cooking_app/css/search.css">
 	<script src="../../static/cooking_app/js/jquery-3.1.1.min.js" charset="utf-8"></script>
 	<script src="../../static/cooking_app/js/bootstrap.min.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#searchForm').submit(function(e){
+				e.preventDefault()
+				$.post(this.action, $(this).serialize(), function(serverResponse){
+					$('#recipe_results').html($(serverResponse).find('#recipe_results'))
+				})
+			});
+
+			$('#searchForm select').change(function(){
+				var form = $('#searchForm')
+				$.post(form.action, $(form).serialize(), function(serverResponse){
+					$('#recipe_results').html($(serverResponse).find('#recipe_results'))
+				})
+			});
+		});
+	</script>
 </head>
 <body>
 	<div class="container">
@@ -31,62 +48,49 @@
 				</div>
 			</nav>
 			<div class="main">
-				<!-- <p>Welcome to <span id="title">potLuck</span>,</p> -->
 				<div id="searchbar">
+					<div class="row">
 						<div class="search-form row">
-							<h3>Search By Keyword</h3>
-							<form method="post" action="{% url 'main:search' %}" class='form-horizontal'>
+							<h3>Search By Category and Keyword</h3>
+							<form id='searchForm' action="{% url 'main:search' %}" method="post" class='form-inline'>
 								{% csrf_token %}
-								<div class="form-group col-xs-12">
-									<input type="text" name="search" placeholder="Search..." class='form-control'>
-								</div>
-								<div class="form-group col-xs-2">
-									<input type="submit" value="Search" class='btn btn-danger'>
-								</div>
-							</form>
-						</div>
-						<div class="filter-form row">
-							<h3>Filter by Category</h3>
-							<form id='category' action="{% url 'main:search' %}" method="post" class='form-horizontal'>
-								{% csrf_token %}
-								<div class="form-group col-xs-12">
-									<select name='category' class='form-control'>
+								<div class="input-group">
+									<select name='category' class="form-control">
+										<option value="noCategory">All Categories</option>
 										{% for category in categories %}
-										<option value="{{category.id}}">{{category.category}}</option>
+											<option value="{{category.id}}">{{category.category}}</option>
 										{% endfor %}
-									</select>
+							    	</select>
 								</div>
-								<div class="form-group col-xs-2">
-									<input type="submit" value="Select" class='btn btn-danger'>
+								<div class="input-group col-xs-9">
+									<input type="text" name="search" placeholder="Search by title or description..." class='form-control'>
+									<span class="input-group-btn">
+										<input type="submit" value="Search" class='btn btn-danger'>
+									</span>
 								</div>
 							</form>
-						</div>
+				 		 </div>
+					 </div>
 				</div>
-				{% if results %}
-				<h1>Results</h1>
-				{% endif %}
-				{% if keyword != '' %}
-				<p>Showing results filtered by keyword "{{keyword}}"...</p>
-				{% endif %}
+
 				<div id="recipe_results">
 					{% for recipe in results %}
-					<div class="recipe">
-						<h3>{{recipe.title}}</h3>
-						{% for image in images %}
-						{% if image.recipe == recipe %}
-						<img style="width: auto; height: 150px;" src="/{{image.image.url}}">
-						{% endif %}
-						{% endfor %}
-						<div class="user_recipe_info">
-							<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
-							<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
-							<p><b>Description: </b>{{recipe.description}}</p>
-							<p><a class='ingredient' href="{% url 'main:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
-							{% if request.session.id == recipe.creator.id %}
-							<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
+						<div class="recipe">
+							<h3>{{recipe.title}}</h3>
+							{% if recipe.recipe_image %}
+								<img style="width: auto; height: 150px;" src="/{{recipe.recipe_image.image.url}}">
 							{% endif %}
+
+							<div class="user_recipe_info">
+								<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
+								<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
+								<p><b>Description: </b>{{recipe.description}}</p>
+								<p><a class='ingredient' href="{% url 'main:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+								{% if request.session.id == recipe.creator.id %}
+									<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
+								{% endif %}
+							</div>
 						</div>
-					</div>
 					{% endfor %}
 				</div>
 			</div>
