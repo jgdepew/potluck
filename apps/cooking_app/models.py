@@ -128,7 +128,8 @@ class RecipePicManager(models.Manager):
 			pic.save()
 			return pic
 		else:
-			return RecipePic.objects.create(title=Recipe.objects.get(id=recipe_id).title, recipe=Recipe.objects.get(id=recipe_id), image=files['image'])
+			recipe = Recipe.objects.get(id=recipe_id)
+			return RecipePic.objects.create(title=recipe.title, recipe=recipe, image=files['image'])
 
 class CategoryManager(models.Manager):
 	def create_categories(self):
