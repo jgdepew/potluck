@@ -23,10 +23,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'l95#5r9%iu^^%ztwu+2h%8-#%@0wos+m1+ykuv1@lqbpy=^5xs'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEVELOPMENT SETTING
+# DEBUG = True
+# DEPLOYMENT SETTING
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+# DEVELOPMENT SETTINGS
+# ALLOWED_HOSTS = []
+# DEPLOYMENT SETTING
+ALLOWED_HOSTS = ['52.35.217.194']
 
 # Application definition
 
@@ -82,20 +87,6 @@ DATABASES = {
 }
 
 
-#DEPLOYMENT SETTINGS
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'evan', # This name must be lowercase but can be anything!
-#         'USER': 'evan', # you can put whatever you want here
-#         'PASSWORD': 'enter', # you can put whatever you want here
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -134,8 +125,8 @@ USE_TZ = True
 
 ENV_PATH = os.path.abspath(os.path.dirname(__file__))
 MEDIA_ROOT = os.path.join(ENV_PATH, 'media/')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'``
 STATIC_URL = '/static/'
 
-#for deployment
+# DEPLOYMENT SETTING
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
