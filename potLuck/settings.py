@@ -24,14 +24,14 @@ SECRET_KEY = 'l95#5r9%iu^^%ztwu+2h%8-#%@0wos+m1+ykuv1@lqbpy=^5xs'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEVELOPMENT SETTING
-# DEBUG = True
+DEBUG = True
 # DEPLOYMENT SETTING
-DEBUG = False
+# DEBUG = False
 
 # DEVELOPMENT SETTINGS
-# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []
 # DEPLOYMENT SETTING
-ALLOWED_HOSTS = ['54.70.185.121']
+# ALLOWED_HOSTS = ['54.70.185.121']
 
 # Application definition
 
