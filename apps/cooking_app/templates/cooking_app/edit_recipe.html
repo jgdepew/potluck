@@ -76,7 +76,7 @@
                     {% endif %}
                     <!-- {% for image in images %}
                     {% if image.recipe == recipe %}
-                    <img id="recipe_img" style="width: auto; height: 150px;" src="/{{image.image.url}}">
+                    <img id="recipe_img" style="width: auto; height: 150px;" src="{{image.image.url}}">
                     {% endif %}
                     {% endfor %} -->
                     <div id="update_recipe">
@@ -113,7 +113,7 @@
                             <div class="foodpic">
                                 {% for image in images %}
                                 {% if image.recipe == recipe %}
-                                <img id="recipe_img" class='img-responsive' src="/{{image.image.url}}">
+                                <img id="recipe_img" class='img-responsive' src="{{image.image.url}}">
                                 {% endif %}
                                 {% endfor %}
                             </div>
