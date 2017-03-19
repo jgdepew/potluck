@@ -39,7 +39,7 @@
 				<h2>{{user.first_name}} {{user.last_name}}</h2>
 
 				{% if user.pic %}
-					<img style="width: auto; height: 150px;" src="/{{user.pic.image.url}}">
+					<img style="width: auto; height: 150px;" src="{{user.pic.image.url}}">
 				{% else %}
 					<p style="font-size: 10px; ">No profile picture</p>
 				{% endif %}
@@ -56,7 +56,7 @@
 
 				<h2>{{user.first_name}}'s Recipes</h2>
 				<!-- <hr class='recipes_hr'> -->
-				{% if not recipes %}
+				{% if not user.created_recipes.all %}
 						<p class='none'>User has uploaded no recipes</p>
 				{% endif %}
 				<div id="user_recipe">
@@ -68,7 +68,7 @@
 								<h3 class='recipe_title'>{{recipe.title}}</h3>
 								{% if recipe.recipe_image %}
 									<div class="bg">
-										<img class="recipe_img" style="width: auto; height: 150px;" src="/{{recipe.recipe_image.image.url}}">
+										<img class="recipe_img" style="width: auto; height: 150px;" src="{{recipe.recipe_image.image.url}}">
 									</div>
 								{% endif %}
 								<div class="user_recipe_info">
@@ -100,7 +100,7 @@
 							<h3 class='recipe_title'>{{recipe.title}}</h3>
 							{% if recipe.recipe_image %}
 								<div class="bg">
-									<img class="recipe_img" style="width: auto; height: 150px;" src="/{{recipe.recipe_image.image.url}}">
+									<img class="recipe_img" style="width: auto; height: 150px;" src="{{recipe.recipe_image.image.url}}">
 								</div>
 							{% endif %}
 							<div class="user_recipe_info">

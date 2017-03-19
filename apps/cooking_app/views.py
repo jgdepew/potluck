@@ -178,7 +178,10 @@ def save_recipe(request, recipe_id):
 
 	user = User.objects.get(id=request.session['id'])
 	recipe = Recipe.objects.get(id=recipe_id)
-	recipe.user.add(user)
+	if user in recipe.user.all():
+		recipe.user.remove(user)
+	else:
+		recipe.user.add(user)
 	recipe.save()
 	return redirect(reverse('main:show_recipe', kwargs={'recipe_id':recipe_id}))
 

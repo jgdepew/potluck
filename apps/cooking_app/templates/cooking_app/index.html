@@ -19,6 +19,7 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
+					<li><a href="{% url 'main:index' %}">Home</a></li>
                     <li><a href="{% url 'main:show_user' id=request.session.id %}">Profile</a></li>
                     <li><a href="{% url 'main:add_recipe' %}">Add a Recipe</a></li>
                     <li><a href="{% url 'main:search' %}">Search</a></li>
@@ -34,11 +35,11 @@
 		<h2>What's on today's menu?</h2>
 		<div id="recipes">
 			{% for recipe in recipes %}
-				<div class="recipe col-xs-12">
+				<div class="recipe col-xs-6">
 					<h3>{{recipe.title}}</h3>
 					{% if recipe.recipe_image %}
 						<div class="bg">
-							<img class='recipe_img' src="/{{recipe.recipe_image.image.url}}">
+							<img class='recipe_img' src="{{recipe.recipe_image.image.url}}">
 						</div>
 					{% endif %}
 					<div class='recipe_info'>
@@ -50,9 +51,9 @@
 				</div>
 			{% endfor %}
 		</div>
-		<div id="sidebar">
+		<!-- <div id="sidebar">
 			<h3>Random Recipes</h3>
-		</div>
+		</div> -->
 	</div>
 </body>
 </html>

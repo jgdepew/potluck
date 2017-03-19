@@ -35,7 +35,7 @@
 			<div id="info">
 				{% if recipe.recipe_image %}
 					<div class="bg">
-						<img id="recipe_img" style="width: auto; height: 150px;" src="/{{recipe.recipe_image.image.url}}">
+						<img id="recipe_img" style="width: auto; height: 150px;" src="{{recipe.recipe_image.image.url}}">
 					</div>
 				{% endif %}
 				<div class="info">
@@ -62,7 +62,11 @@
 						</form>
 					{% endif %}
 					{% if request.session.id != recipe.creator.id %}
-						<p><a href="{% url 'main:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
+						{% if user in recipe.user.all %}
+							<p><a href="{% url 'main:save_recipe' recipe_id=recipe.id %}">Unsave This Recipe</a></p>
+						{% else %}
+							<p><a href="{% url 'main:save_recipe' recipe_id=recipe.id %}">Save This Recipe</a></p>
+						{% endif %}
 					{% endif %}
 					<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hour(s), {{recipe.prep_time_minute}} minutes.</p>
 					<p><b>Cook Time:</b> {{recipe.cook_time_hour}}  hour(s), {{recipe.cook_time_minute}} minutes.</p>

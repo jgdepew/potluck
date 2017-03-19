@@ -78,7 +78,7 @@ h2{
 }
 
 .recipe{
-  display: block;
+  /*display: block;*/
   /*margin-right: ;*/
   margin-left: 2em;
   padding: 1em;
@@ -90,17 +90,17 @@ h2{
   max-width: 35em;
 }
 
-#recipes{
+/*#recipes{
   display: inline-block;
   margin-right: 6em;
   max-width: 70%;
-}
+}*/
 
-#sidebar{
+/*#sidebar{
   display: inline-block;
   vertical-align: top;
   width: 30%;
-}
+}*/
 
 hr{
   width: 90%;
