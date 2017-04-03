@@ -84,11 +84,11 @@
 							<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
 							<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
 							<p><b>Description: </b>{{recipe.description}}</p>
-							<p><a class='ingredient' href="{% url 'potluck:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
+							<p><a class='ingredient' href="{% url 'main:show_recipe' recipe_id=recipe.id %}">Ingredient List</a></p>
 							{% if request.session.id == recipe.creator.id %}
-  							<a href="{% url 'potluck:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
+  							<a href="{% url 'main:edit_recipe' recipe_id=recipe.id %}"><button class='btn btn-danger'>Edit Recipe</button></a>
 							{% endif %}
-              
+
 							<div class="user_recipe_info">
 								<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
 								<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>

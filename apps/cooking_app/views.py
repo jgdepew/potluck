@@ -29,6 +29,7 @@ def show_recipe(request, recipe_id):
 
 	if request.method == 'POST':
 		post = Comment.objects.create(comment=request.POST['comment'], user=User.objects.get(id=request.session['id']), recipe=Recipe.objects.get(id=recipe_id))
+		return redirect(reverse('main:show_recipe', kwargs={'recipe_id': recipe_id}))
 
 	recipe = Recipe.objects.get(id=recipe_id)
 	ratings = recipe.ratings.all()

@@ -27,10 +27,12 @@
                         // TODO: if new measurement/ingredient was added update that
                     });
                 });
+
+                //TODO: FIX DELETE
                 $('#steps').on('click', '.link', function(e){
                     e.preventDefault();
                     $.get($(this).attr('href'), function(serverResponse){
-                        $('#div_'+serverResponse.to_delete).siblings().find('.divider').prevObject[2].remove();
+                        // $('#div_'+serverResponse.to_delete).siblings().find('.divider').prevObject[2].remove();
                         $('#div_'+serverResponse.to_delete).remove();
                     });
                 });
@@ -163,10 +165,11 @@
                                 <div class="col-sm-2">
                                     <a class='link' href="{% url 'main:delete_step' step_id=step.id %}"><button class='btn btn-danger'>Delete Step</button></a>
                                 </div>
+                                <hr>
                             </div>
                             <!-- <div class="divider"> -->
                                 <!-- <div class="spacing"></div> -->
-                                <hr>
+                                <!-- <hr> -->
                                 <!-- <div class="spacing"></div> -->
                             <!-- </div> -->
                         {% endfor %}

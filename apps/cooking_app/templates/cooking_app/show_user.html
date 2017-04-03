@@ -103,7 +103,7 @@
 									<img class="recipe_img" style="width: auto; height: 150px;" src="{{recipe.recipe_image.image.url}}">
 								</div>
 							{% endif %}
-              
+
 							<div class="user_recipe_info">
 								<p><b>Prep Time:</b> {{recipe.prep_time_hour}} hours, {{recipe.prep_time_minute}} minutes.</p>
 								<p><b>Cook Time:</b> {{recipe.cook_time_hour}} hours, {{recipe.cook_time_minute}} minutes.</p>
@@ -114,7 +114,8 @@
 								{% endif %}
 							</div>
 						</div>
-						<hr>
+					{% endfor %}
+					<hr>
 				</div>
 			</div>
 		</div>
