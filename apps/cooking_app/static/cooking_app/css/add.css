@@ -14,7 +14,7 @@ body{
 .main{
   margin: auto;
   margin-top: 3.75em;
-  width: 80%;
+  width: 100%;
   background-color: white;
   height: 100%;
   padding: 1.5em;
@@ -58,9 +58,6 @@ form{
   width: 100%;
 }
 
-a:visited {
-    color: black;
-}
 #header li{
   list-style: none;
   display: inline-block;
@@ -92,16 +89,9 @@ input[type=number], input[type=text], textarea{
 label{
     vertical-align: top;
 }
-a:link{
-  color: black;
-}
 
 textarea {
   resize: none;
-}
-
-hr{
-  width: 90%;
 }
 
 .bg{
@@ -151,4 +141,24 @@ hr{
 
 .edit{
   padding-bottom: .75em;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+#steps *{
+  margin: auto;
+}
+
+#steps{
+  margin-bottom: 5em;
+}
+
+hr{
+  width: 90%;
+}
+
+#new_step_form{
+  margin-top: 30px;
 }

@@ -16,7 +16,7 @@
 		</div>
 		<div id="form">
 			<h3>Register</h3>
-			<form action="{% url 'potluck:register' %}" method="post" class='form-horizontal'>
+			<form action="{% url 'loginReg:register' %}" method="post" class='form-horizontal'>
 				{% csrf_token %}
 				<div class="form-group">
 					<div class="col-sm-12 col-md-12 col-lg-12">
@@ -59,7 +59,7 @@
 			{% endif %}
 
 			<br>
-			<a href="{% url 'potluck:login' %}">already have an account? login here!</a>
+			<a href="{% url 'loginReg:login' %}">Already have an account? Login here!</a>
 		</div>
 	</div>
 </body>

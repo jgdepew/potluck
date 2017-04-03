@@ -3,9 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^$', views.login, name='login'),
-    url(r'^register$', views.register, name='register'),
-    url(r'^logout$', views.logout, name='logout'),
+    url(r'^$', views.welcome, name='welcome'),
     url(r'^dashboard$', views.index, name='index'),
     url(r'^user/(?P<id>\d+)$', views.show_user, name='show_user'),
     url(r'^recipe/(?P<recipe_id>\d+)$', views.show_recipe, name='show_recipe'),

@@ -14,7 +14,7 @@
   </head>
   <body>
     <h1>File uploader</h1>
-    <form enctype="multipart/form-data" action="{% url 'potluck:upload' %}" method="post">
+    <form enctype="multipart/form-data" action="{% url 'main:upload' %}" method="post">
       {% csrf_token %}
       {{form}}
       {# #}

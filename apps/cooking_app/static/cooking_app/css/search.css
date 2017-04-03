@@ -32,7 +32,19 @@ body{
   font-size: 1.5em
 }
 
-.recipe {
+/*.recipe {
   display: inline-block;
   margin:1em;
-}
+}*/
+
+/*.recipe{
+  display: block;
+  margin-left: 2em;
+  padding: 1em;
+  padding-top: 0;
+  padding-bottom: 2em;
+  border: 1px #9c9c9c solid;
+  margin-bottom: 3em;
+  box-shadow: .25em .5em 1em;
+  max-width: 35em;
+}*/
